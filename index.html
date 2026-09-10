@@ -282,6 +282,7 @@
           <div class="field"><label>大腿圍 (cm)</label><input type="number" inputmode="decimal" id="b_thigh" value="54"></div>
           <div class="field"><label>小腿圍 (cm)</label><input type="number" inputmode="decimal" id="b_calf" placeholder="選填"></div>
         </div>
+        <button id="resetFormBtn" class="btn-solid" type="button" style="background:#FFD9CC;margin-top:10px;">清除已儲存的身型與衣服資料</button>
       </div>
 
       <div class="panel active" id="panel-cloth">
@@ -383,6 +384,7 @@ categorySelect.addEventListener('change', ()=>{
   renderSprite();
   switchTab('cloth');
   render();
+  saveFormData();
 });
 updateCategoryUI(activeCat);
 
@@ -415,6 +417,7 @@ function updateLockUI(){
 document.getElementById('lockBtn').addEventListener('click', ()=>{
   bodyLocked = !bodyLocked;
   updateLockUI();
+  saveFormData();
 });
 updateLockUI();
 
@@ -561,6 +564,7 @@ document.querySelectorAll('.rotate-btn').forEach(btn=>{
     const dir = btn.getAttribute('aria-label') === '向左旋轉' ? -1 : 1;
     angleIndex = (angleIndex + dir + SPRITE_ANGLES.length) % SPRITE_ANGLES.length;
     renderSprite();
+    saveFormData();
   });
 });
 
@@ -883,14 +887,87 @@ document.getElementById('savePresetBtn').addEventListener('click', ()=>{
 });
 
 document.querySelectorAll('input, select').forEach(el=>el.addEventListener('input', render));
+
+// ---- 表單資料自動儲存 / 還原 / 清除 ----
+// 與常用版型相同的雙重備援：優先用 window.storage（Claude 環境的持久化儲存），
+// 若不存在則退回瀏覽器原生 localStorage（下載到自己網站上執行時就是這一條路徑）。
+const FORM_KEY = 'fitmirror-formdata';
+const FORM_IDS = [
+  'b_height','b_weight','b_shoulder','b_chest','b_waist','b_hip','b_arm','b_elbow','b_neck','b_inseam','b_thigh','b_calf',
+  'c_build','c_sleeveType','c_length','c_shoulder','c_chest','c_sleeve',
+  'p_length','p_waist','p_hip','p_thigh','p_rise'
+];
+
+async function saveFormData(){
+  const data = {};
+  FORM_IDS.forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) data[id] = el.value;
+  });
+  data.__category = categorySelect.value;
+  data.__bodyLocked = bodyLocked;
+  data.__angleIndex = angleIndex;
+  const json = JSON.stringify(data);
+  try{ localStorage.setItem(FORM_KEY, json); }catch(e){ /* 忽略 */ }
+  try{
+    if(window.storage){ await window.storage.set(FORM_KEY, json, false); }
+  }catch(e){ console.error('儲存表單資料失敗', e); }
+}
+
+async function loadFormData(){
+  let data = null;
+  try{
+    if(window.storage){
+      const res = await window.storage.get(FORM_KEY, false);
+      if(res && res.value) data = JSON.parse(res.value);
+    } else {
+      const raw = localStorage.getItem(FORM_KEY);
+      if(raw) data = JSON.parse(raw);
+    }
+  }catch(e){
+    try{
+      const raw = localStorage.getItem(FORM_KEY);
+      if(raw) data = JSON.parse(raw);
+    }catch(e2){ data = null; }
+  }
+  if(!data) return;
+  FORM_IDS.forEach(id=>{
+    const el = document.getElementById(id);
+    if(el && data[id] !== undefined) el.value = data[id];
+  });
+  if(data.__category){ activeCat = data.__category; categorySelect.value = activeCat; updateCategoryUI(activeCat); }
+  if(data.__bodyLocked){ bodyLocked = true; updateLockUI(); }
+  if(typeof data.__angleIndex === 'number'){ angleIndex = data.__angleIndex; }
+}
+
+async function clearFormData(){
+  try{ localStorage.removeItem(FORM_KEY); }catch(e){ /* 忽略 */ }
+  try{
+    if(window.storage){ await window.storage.delete(FORM_KEY, false); }
+  }catch(e){ /* 忽略 */ }
+  location.reload();
+}
+
+document.querySelectorAll('#bodyInputsGrid input, #topFields input, #topFields select, #pantFields input').forEach(el=>{
+  el.addEventListener('input', saveFormData);
+  el.addEventListener('change', saveFormData);
+});
+document.getElementById('c_build').addEventListener('change', saveFormData);
+document.getElementById('resetFormBtn').addEventListener('click', ()=>{
+  if(!confirm('確定要清除已儲存的身型與衣服尺寸資料嗎？此動作無法復原。')) return;
+  clearFormData();
+});
+
 document.getElementById('analyzeBtn').addEventListener('click', ()=>{
   switchTab('result');
   render();
 });
 
 loadPresets();
-renderSprite();
-render();
+loadFormData().then(()=>{
+  renderSprite();
+  render();
+});
 </script>
 </body>
 </html>
