@@ -1,809 +1,564 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
-    <title>新竹道館34週年館慶 - 和平永續 福馬奔騰</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>穿搭鏡 · 試衣模擬器</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sky-top:#BFE8FB;
+    --sky-bot:#E9F7ED;
+    --grass:#BFE3A0;
+    --card:#FFFBF1;
+    --card-edge:#F0E4C8;
+    --ink:#3A342A;
+    --ink-soft:#8A8072;
+    --leaf:#6FB43F;
+    --leaf-deep:#4E8F29;
+    --coral:#FF8B6B;
+    --coral-deep:#E5623F;
+    --sun:#FFCF4D;
+    --sun-deep:#E5A924;
+    --lav:#B9A6E0;
+    --lav-deep:#9481C4;
+    --sky-btn:#6FC2E8;
+    --sky-btn-deep:#3E9BC7;
+    --shadow: 0 8px 0 rgba(58,52,42,0.12);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Noto Sans TC','Baloo 2',sans-serif;
+    background:#DCE9E2;
+    display:flex;
+    justify-content:center;
+    padding:28px 12px;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .phone{
+    width:392px;
+    max-width:100%;
+    background:linear-gradient(180deg,var(--sky-top) 0%, var(--sky-bot) 55%, var(--grass) 100%);
+    border-radius:38px;
+    border:6px solid #2E2B26;
+    overflow:hidden;
+    box-shadow:0 20px 0 rgba(0,0,0,0.08), 0 24px 40px rgba(0,0,0,0.18);
+    position:relative;
+  }
+  .notch{
+    position:absolute; top:0; left:50%; transform:translateX(-50%);
+    width:150px; height:22px; background:#2E2B26; border-radius:0 0 16px 16px; z-index:30;
+  }
+  .app{ padding:34px 16px 18px; position:relative; z-index:1; }
 
-    <meta name="description" content="太極門氣功養生學會60週年暨新竹道館34週年館慶，5月17日於新竹市勞工及青年處盛大登場！誠摯邀請您共襄盛舉文化饗宴。">
+  /* header */
+  .topbar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+  .brand{ display:flex; align-items:center; gap:8px; }
+  .brand .dot{ width:14px;height:14px;border-radius:50%;background:var(--sun); border:2px solid var(--ink); }
+  .brand h1{ font-family:'Baloo 2'; font-size:19px; margin:0; letter-spacing:.3px; }
+  .icon-btn{
+    width:34px;height:34px;border-radius:12px;background:var(--card);
+    border:2px solid var(--ink); display:flex;align-items:center;justify-content:center;
+    font-size:16px; box-shadow:0 3px 0 rgba(58,52,42,0.25);
+  }
 
-    <meta property="og:title" content="新竹太極門34週年館慶 - 和平永續 福馬奔騰" />
-    <meta property="og:description" content="太極門氣功養生學會60週年暨新竹道館34週年館慶，5月17日盛大登場！誠摯邀請您共襄盛舉文化饗宴。" />
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://您的網站網址.com" />
-    <meta property="og:image" content="https://您的網站網址.com/images/share-preview.jpg" />
-    <meta property="og:site_name" content="太極門氣功養生學會新竹道館" />
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --primary-gold: #FFE066;
-            --primary-orange: #FF8C00;
-            --primary-red: #E63946;
-            --primary-purple: #9932CC;
-            --dark-border: #1A252F; /* 普普風粗黑邊框 */
-            --bg-gradient: linear-gradient(135deg, #FFFDF0 0%, #FFF3E0 35%, #FFEbee 70%, #F3E5F5 100%);
-            --card-bg: rgba(255, 255, 255, 0.95);
-        }
+  /* category pills */
+  .cats{ display:flex; gap:8px; overflow-x:auto; padding:10px 2px 14px; scrollbar-width:none;}
+  .cats::-webkit-scrollbar{display:none;}
+  .cat{
+    flex:0 0 auto; padding:8px 14px; border-radius:999px; border:2px solid var(--ink);
+    background:var(--card); font-size:13px; font-weight:700; cursor:pointer; white-space:nowrap;
+    box-shadow:0 3px 0 rgba(58,52,42,0.2);
+  }
+  .cat.active{ background:var(--sun); }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Noto Sans TC', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
+  /* stage */
+  .stage{
+    position:relative; height:280px; border-radius:26px; overflow:hidden;
+    background:radial-gradient(120% 90% at 50% 12%, #FFFDF6 0%, transparent 55%),
+               linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bot) 62%, var(--grass) 100%);
+    border:2px solid var(--card-edge);
+    margin-bottom:14px;
+  }
+  .cloud{ position:absolute; background:#fff; border-radius:50%; opacity:.85; }
+  .figure{ position:absolute; left:50%; top:54%; transform:translate(-50%,-50%); width:132px; image-rendering:pixelated; }
+  .tag{
+    position:absolute; padding:3px 9px; border-radius:999px; font-size:11px; font-weight:700;
+    border:2px solid var(--ink); background:var(--card); white-space:nowrap;
+    box-shadow:0 2px 0 rgba(58,52,42,0.25);
+    transition:background .25s, color .25s;
+  }
+  .stage-rotate{
+    position:absolute; bottom:10px; right:10px; display:flex; gap:6px;
+  }
+  .stage-rotate .icon-btn{ width:30px;height:30px; font-size:13px; }
+  .tri{ width:0; height:0; display:inline-block; }
+  .tri-left{ border-top:6px solid transparent; border-bottom:6px solid transparent; border-right:9px solid var(--ink); }
+  .tri-right{ border-top:6px solid transparent; border-bottom:6px solid transparent; border-left:9px solid var(--ink); }
+  .verdict-banner{
+    display:flex; align-items:center; gap:10px; padding:12px 14px; border-radius:18px;
+    border:2px solid var(--ink); margin-bottom:14px; background:var(--card);
+    box-shadow:var(--shadow);
+  }
+  .verdict-badge{
+    flex:0 0 auto; padding:8px 6px; min-width:50px; text-align:center; border-radius:12px;
+    border:2px solid var(--ink); font-weight:800; font-size:12px; line-height:1.3;
+  }
+  .verdict-banner .t1{ font-size:11px; color:var(--ink-soft); font-weight:700; }
+  .verdict-banner .t2{ font-size:15px; font-weight:900; }
 
-        body {
-            background: var(--bg-gradient);
-            background-attachment: fixed;
-            color: #2C3E50;
-            overflow-x: hidden;
-            position: relative;
-        }
+  /* sheet */
+  .sheet{
+    background:var(--card); border:2px solid var(--card-edge); border-radius:24px 24px 18px 18px;
+    padding:6px 4px 16px; box-shadow:var(--shadow);
+  }
+  .tabs{ display:flex; padding:10px 10px 0; gap:6px; }
+  .tab{
+    flex:1; text-align:center; padding:9px 4px; font-weight:800; font-size:13.5px;
+    border-radius:14px 14px 0 0; cursor:pointer; color:var(--ink-soft);
+  }
+  .tab.active{ background:#FFF; color:var(--ink); border:2px solid var(--card-edge); border-bottom:none; }
+  .panel{ padding:14px 14px 4px; display:none; }
+  .panel.active{ display:block; }
 
-        /* ==================== 背景動態 ==================== */
-        .pony-background-wrapper {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            z-index: -1;
-            overflow: hidden;
-        }
+  .field{ margin-bottom:11px; }
+  .field label{ display:flex; justify-content:space-between; font-size:12.5px; font-weight:700; color:var(--ink-soft); margin-bottom:4px; }
+  .field label span.opt{ font-weight:500; color:#B7AF9F; }
+  .field input[type=number]{
+    width:100%; padding:9px 10px; border-radius:12px; border:2px solid var(--card-edge);
+    font-size:14px; font-family:inherit; background:#FFFDF8; color:var(--ink); font-weight:700;
+  }
+  .field input[type=number]:focus{ outline:none; border-color:var(--sky-btn); }
+  .field input[type=number]:disabled{ background:#EFEAE0; color:var(--ink-soft); border-color:#E4DCC9; cursor:not-allowed; }
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:0 10px; }
 
-        .sun-glow {
-            position: absolute;
-            top: -100px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 800px;
-            height: 800px;
-            background: radial-gradient(circle, rgba(255, 224, 102, 0.35) 0%, rgba(255, 140, 0, 0.1) 50%, rgba(255, 255, 255, 0) 70%);
-            filter: blur(20px);
-        }
+  .lock-bar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:8px 10px; margin-bottom:12px; border-radius:14px;
+    background:#FFF6DC; border:2px solid var(--card-edge);
+  }
+  .lock-bar.is-locked{ background:#EAF6E4; border-color:var(--leaf); }
+  .lock-label{ font-size:12.5px; font-weight:800; color:var(--ink); display:flex; align-items:center; gap:6px; }
+  .status-dot{ width:9px; height:9px; border-radius:2px; background:var(--sun-deep); display:inline-block; flex:0 0 auto; }
+  .lock-bar.is-locked .status-dot{ background:var(--leaf-deep); }
+  .lock-btn{
+    padding:6px 12px; border-radius:999px; border:2px solid var(--ink); font-weight:800;
+    font-size:12px; cursor:pointer; background:var(--card); box-shadow:0 2px 0 rgba(58,52,42,0.2);
+  }
+  .lock-bar.is-locked .lock-btn{ background:var(--sun); }
+  .stage-chip{
+    position:absolute; top:10px; left:10px; padding:5px 12px; border-radius:999px;
+    background:var(--card); border:2px solid var(--ink); font-size:12px; font-weight:800;
+    box-shadow:0 2px 0 rgba(58,52,42,0.25); z-index:5;
+  }
+  .cat.pulse{ animation:catpulse .35s ease; }
+  @keyframes catpulse{ 0%{ transform:scale(1);} 40%{ transform:scale(1.12);} 100%{ transform:scale(1);} }
 
-        .pony-pattern-layer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.1;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23FF8C00' fill-opacity='0.7'%3E%3Cpath d='M20 30c3-5 10-5 13-1 2 3 0 8-3 9-4 2-10 1-12-3s-1-4 2-5zm18 5c1 1 2 2 3 3 2 1 4-1 3-3-1-2-4-2-6-1 0 1 0 1 0 1zm-1 9c1-1 3-3 4-2 2 1 1 4-1 5-2 1-3-1-3-3zm13-17c-1-1-2-1-3-1-2 0-3 2-2 3 1 2 3 1 5-1zm-21 21c1-2 3-3 5-2 3 1 3 4 1 6-2 1-4 0-5-2zm12 11c1-1 3-2 4-1 2 1 1 3-1 4-2 1-3-1-3-3zm-10 9c0-1 1-3 3-3 2 0 3 2 2 3-1 1-3 1-4 0z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-            background-size: 100px 100px;
-            animation: backgroundWalk 45s linear infinite;
-        }
+  .results{ padding:4px 14px 14px; }
+  .res-row{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:9px 0; border-bottom:1px dashed var(--card-edge);
+  }
+  .res-row:last-child{ border-bottom:none; }
+  .res-name{ font-size:13px; font-weight:700; color:var(--ink); }
+  .res-nums{ font-size:11px; color:var(--ink-soft); }
+  .chip{
+    padding:4px 10px; border-radius:999px; font-size:11.5px; font-weight:800; border:2px solid var(--ink);
+  }
+  .hint{ font-size:11px; color:var(--ink-soft); line-height:1.6; padding:8px 14px 2px; }
 
-        @keyframes backgroundWalk {
-            0% { background-position: 0px 0px; }
-            100% { background-position: 100px 100px; }
-        }
-
-        /* ==================== 主視覺區 ==================== */
-        .hero {
-            padding: 50px 16px 30px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            position: relative;
-        }
-
-        .header-group {
-            margin-bottom: 20px;
-            z-index: 2;
-        }
-
-        .association-title {
-            font-size: 1.2rem;
-            color: #D9383A;
-            font-weight: 700;
-            letter-spacing: 0.15em;
-            line-height: 1.5;
-            margin-bottom: 2px;
-            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.9);
-        }
-
-        .main-theme {
-            font-size: clamp(1.8rem, 7.5vw, 2.8rem);
-            font-weight: 900;
-            color: var(--primary-red);
-            background: linear-gradient(45deg, #D9383A 0%, #FF8C00 50%, #9932CC 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 25px;
-            letter-spacing: clamp(1px, 1vw, 4px);
-            filter: drop-shadow(1px 2px 4px rgba(0, 0, 0, 0.1));
-            z-index: 2;
-            white-space: nowrap;
-            width: 100%;
-            max-width: 100%;
-            box-sizing: border-box;
-            display: inline-block;
-        }
-
-        .event-tag {
-            background: linear-gradient(135deg, var(--primary-orange), var(--primary-red));
-            color: white;
-            padding: 8px 24px;
-            border-radius: 20px;
-            font-size: 1rem;
-            font-weight: bold;
-            letter-spacing: 3px;
-            box-shadow: 0 4px 10px rgba(230, 57, 70, 0.25);
-            margin-bottom: 35px;
-            z-index: 2;
-        }
-
-        /* 精彩回顧標題（置中且前後加星） */
-        .video-title {
-            font-size: 1.25rem;
-            font-weight: 900;
-            color: #C32F27;
-            margin-bottom: 12px;
-            letter-spacing: 2px;
-            display: flex;
-            align-items: center;
-            justify-content: center; /* 標題置中 */
-            gap: 6px;
-            z-index: 2;
-            position: relative;
-            width: 100%;
-        }
-
-        .video-title::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 40px;
-            height: 3px;
-            background-color: var(--primary-gold);
-            border-radius: 2px;
-        }
-
-        /* 影片區 */
-        .video-container {
-            width: 100%;
-            max-width: 500px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
-            border-radius: 12px;
-            overflow: hidden;
-            border: 2px solid #FFF;
-            background: #000;
-            z-index: 2;
-        }
-
-        .video-wrapper {
-            position: relative;
-            padding-bottom: 56.25%;
-            height: 0;
-            overflow: hidden;
-        }
-
-        .video-wrapper iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: 0;
-        }
-
-        /* ==================== 外框寬度符合文字不超出 ==================== */
-        .simple-time-box {
-            background: white;
-            padding: 32px 28px 26px; /* 增加左右與上下留白 */
-            border-radius: 24px;
-            box-shadow: 0 12px 30px rgba(230, 57, 70, 0.18);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 25px;
-            border: 4px solid var(--primary-gold);
-            z-index: 2;
-            width: max-content; /* 寬度自適應內部文字，不超出 */
-            max-width: 95%; /* 手機防溢出螢幕保護 */
-            position: relative;
-        }
-
-        /* 活動舉辦日標籤 */
-        .time-badge {
-            position: absolute;
-            top: -14px;
-            background: #FFD54F;
-            color: #4E342E;
-            font-size: 0.8rem;
-            font-weight: 900;
-            padding: 4px 14px;
-            border-radius: 12px;
-            border: 2px solid #1A252F;
-            letter-spacing: 2px;
-            box-shadow: 3px 3px 0 #1A252F;
-            animation: pulse-glow 2s infinite ease-in-out;
-        }
-
-        @keyframes pulse-glow {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); box-shadow: 4px 4px 0 #1A252F; }
-        }
-
-        .time-box-row {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 14px;
-            width: 100%;
-        }
-
-        /* 主要活動日期 */
-        .simple-date { 
-            font-size: clamp(2.4rem, 10vw, 3.4rem); 
-            font-weight: 900; 
-            color: var(--primary-red); 
-            line-height: 1;
-            letter-spacing: -1px;
-            white-space: nowrap; 
-        }
-        
-        /* 星期標籤 */
-        .simple-week { 
-            font-size: 0.9rem; 
-            font-weight: 700; 
-            color: #616161; 
-            background: #FFE082; 
-            padding: 3px 8px; 
-            border-radius: 12px;
-            white-space: nowrap; 
-        }
-
-        .simple-divider { 
-            width: 2px; 
-            height: 35px; 
-            background-color: #E0E0E0; 
-        }
-
-        /* 活動時間 */
-        .simple-hours { 
-            font-size: clamp(1.3rem, 5.5vw, 1.7rem); 
-            font-weight: 900; 
-            color: #1A252F; 
-            letter-spacing: 0.5px;
-            white-space: nowrap; 
-        }
-
-        .countdown {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            z-index: 2;
-        }
-
-        .countdown-item {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 10px 15px;
-            border-radius: 10px;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.05);
-            min-width: 75px;
-            border-top: 3px solid var(--primary-gold);
-            border-bottom: 3px solid var(--primary-purple);
-        }
-
-        .countdown-num { font-size: 1.8rem; font-weight: 900; color: var(--primary-red); line-height: 1.1; }
-        .countdown-label { font-size: 0.8rem; color: #666; margin-top: 2px; font-weight: bold; }
-
-        /* ==================== 內容區 ==================== */
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 10px 16px 30px; /* 將上方 padding 縮小，拉近與上方時間盒的距離 */
-            position: relative;
-            z-index: 2;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 1.8rem;
-            color: #C32F27;
-            margin-bottom: 25px; /* 縮小與下方邀請語的間距 */
-            position: relative;
-            font-weight: 900;
-            letter-spacing: 1.5px;
-        }
-
-        .section-title::after {
-            content: '';
-            display: block;
-            width: 60px; height: 4px;
-            background: linear-gradient(90deg, var(--primary-orange), var(--primary-purple));
-            margin: 10px auto 0;
-            border-radius: 2px;
-        }
-
-        /* 展演邀請語風格（已加大字體、深色醒目並適合手機斷行） */
-        .section-invitation {
-            text-align: center;
-            font-size: clamp(1.1rem, 4.5vw, 1.25rem); /* 自適應大字體 */
-            line-height: 1.8;
-            color: #1A252F; /* 更深更醒目的炭黑色 */
-            max-width: 650px;
-            margin: 0 auto 35px; /* 保持與下方卡片群的舒適間距 */
-            font-weight: 900; /* 超粗體 */
-            letter-spacing: 1.5px;
-            padding: 0 10px;
-        }
-
-        /* ==================== 地圖區 ==================== */
-        .info-section {
-            background: white;
-            border-radius: 16px;
-            padding: 25px 20px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-            margin: 0 auto 50px; /* 維持下方間距 */
-            max-width: 480px;
-            border: 1px solid rgba(255,255,255,0.8);
-            text-align: center;
-        }
-
-        /* 簡易平面化嵌入式地圖容器 */
-        .map-embed-container-flat {
-            width: 100%;
-            height: 220px;
-            overflow: hidden;
-            border: 1px solid #E2E8F0; /* 極簡扁平化細灰邊線 */
-            margin: 15px 0;
-            background: #F8F9FA;
-        }
-
-        .map-embed-container-flat iframe {
-            width: 100%;
-            height: 100%;
-            border: 0;
-            display: block;
-        }
-
-        .btn-map {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 14px 20px;
-            background: linear-gradient(135deg, var(--primary-orange), var(--primary-red));
-            color: white;
-            text-decoration: none;
-            border-radius: 30px;
-            font-weight: bold;
-            font-size: 1.05rem;
-            box-shadow: 0 4px 12px rgba(230, 57, 70, 0.3);
-            width: 100%;
-            justify-content: center;
-            margin-top: 5px;
-        }
-
-        /* ==================== 最底部道館位置聯絡資訊區 ==================== */
-        .dojo-contact-section {
-            background: #FFFFFF;
-            border-top: 4px solid var(--primary-gold);
-            padding: 12px 16px; /* 縮小上下寬幅 */
-            text-align: center;
-            position: relative;
-            z-index: 2;
-            box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.03);
-        }
-
-        .dojo-contact-card {
-            max-width: 750px;
-            margin: 0 auto;
-        }
-
-        .dojo-info-text-single {
-            font-size: 0.95rem;
-            color: #4A5568;
-            line-height: 1.6;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-
-        .dojo-info-text-single a {
-            color: #D9383A;
-            text-decoration: none;
-            font-weight: 900;
-        }
-
-        /* ==================== 普普風展演卡片區 ==================== */
-        .show-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
-        }
-
-        .show-card {
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            border: 4px solid var(--dark-border);
-            box-shadow: 6px 8px 0px var(--dark-border);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            transition: transform 0.1s;
-        }
-
-        .show-card:active {
-            transform: translate(2px, 2px);
-            box-shadow: 4px 6px 0px var(--dark-border);
-        }
-
-        /* 普普風半色調網點底圖 */
-        .pop-illustration {
-            height: 150px;
-            position: relative;
-            overflow: hidden;
-            border-bottom: 4px solid var(--dark-border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #F8F9FA;
-        }
-
-        .halftone-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: radial-gradient(var(--dark-border) 15%, transparent 16%);
-            background-size: 12px 12px;
-            opacity: 0.1;
-            pointer-events: none;
-        }
-
-        /* ---------- 1. 神鼓齊鳴 ---------- */
-        .bg-drum { background-color: #4BD6FF; }
-        .pop-icon-drum { width: 90px; height: 90px; position: relative; }
-        .drum-cylinder {
-            position: absolute; width: 70px; height: 55px; background: #FF4B5C;
-            border: 4px solid var(--dark-border); border-radius: 12px;
-            bottom: 5px; left: 10px; box-shadow: 5px 5px 0 var(--dark-border);
-        }
-        .drum-top-surface {
-            position: absolute; width: 70px; height: 22px; background: #FFE066;
-            border: 4px solid var(--dark-border); border-radius: 50%;
-            top: 13px; left: 10px; z-index: 2;
-        }
-        .drum-dots {
-            position: absolute; top: 38px; left: 15px; right: 15px;
-            height: 6px; border-bottom: 5px dotted var(--dark-border); z-index: 3;
-        }
-
-        /* ---------- 2. 神采腰鼓 ---------- */
-        .bg-ribbon { background-color: #FFE066; }
-        .pop-icon-ribbon { width: 100px; height: 100px; position: relative; }
-        .stick-cross-1 {
-            position: absolute; width: 85px; height: 12px; background: #FF4B5C;
-            border: 4px solid var(--dark-border); border-radius: 6px;
-            top: 45px; left: 8px; transform: rotate(40deg); box-shadow: 3px 3px 0 var(--dark-border); z-index: 2;
-        }
-        .stick-cross-2 {
-            position: absolute; width: 85px; height: 12px; background: #9932CC;
-            border: 4px solid var(--dark-border); border-radius: 6px;
-            top: 45px; left: 8px; transform: rotate(-40deg); box-shadow: 3px 3px 0 var(--dark-border); z-index: 3;
-        }
-        .ribbon-loop-1 {
-            position: absolute; width: 45px; height: 35px; border: 5px solid #00E676;
-            border-radius: 50%; top: 10px; left: -5px; border-bottom-color: transparent; transform: rotate(-20deg);
-        }
-        .ribbon-loop-2 {
-            position: absolute; width: 45px; height: 35px; border: 5px solid #4BD6FF;
-            border-radius: 50%; bottom: 10px; right: -5px; border-top-color: transparent; transform: rotate(-20deg);
-        }
-
-        /* ---------- 3. 活力青年 ---------- */
-        .bg-youth { background-color: #FF85A2; }
-        .pop-icon-youth {
-            width: 110px; height: 100px; position: relative;
-            display: flex; justify-content: center; gap: 12px; align-items: flex-end; padding-bottom: 10px;
-        }
-        .youth-figure { position: relative; width: 42px; height: 75px; }
-        .youth-head {
-            width: 36px; height: 36px; border: 4px solid var(--dark-border);
-            border-radius: 50%; margin: 0 auto; position: relative; z-index: 2;
-        }
-        .youth-head::before {
-            content: ''; position: absolute; width: 5px; height: 5px; background: var(--dark-border);
-            border-radius: 50%; top: 10px; left: 7px; box-shadow: 10px 0 0 var(--dark-border);
-        }
-        .youth-head::after {
-            content: ''; position: absolute; width: 12px; height: 6px; border-bottom: 3px solid var(--dark-border);
-            border-radius: 0 0 10px 10px; top: 18px; left: 8px;
-        }
-        .boy-head { background: #FFE066; }
-        .girl-head { background: #00E676; }
-        .youth-body {
-            width: 42px; height: 40px; border: 4px solid var(--dark-border);
-            border-radius: 20px 20px 0 0; margin-top: -5px; box-shadow: 4px 4px 0 var(--dark-border);
-        }
-        .boy-body { background: #4BD6FF; }
-        .girl-body { background: #FFE066; }
-
-        /* ---------- 4. 樂活手語 ---------- */
-        .bg-sign { background-color: #00E676; }
-        .pop-icon-sign { width: 110px; height: 100px; position: relative; }
-        .pop-fa-heart {
-            position: absolute; font-size: 50px; color: #FF4B5C;
-            top: 10px; left: 30px; z-index: 3;
-            text-shadow: -2px -2px 0 var(--dark-border), 2px -2px 0 var(--dark-border), 
-                         -2px 2px 0 var(--dark-border), 2px 2px 0 var(--dark-border), 
-                         5px 5px 0 var(--dark-border);
-        }
-        .hand-l {
-            position: absolute; width: 35px; height: 50px; background: #FFE066;
-            border: 4px solid var(--dark-border); border-radius: 20px 20px 0 0;
-            bottom: 10px; left: 15px; transform: rotate(-25deg); box-shadow: 4px 4px 0 var(--dark-border);
-        }
-        .hand-r {
-            position: absolute; width: 35px; height: 50px; background: #FFE066;
-            border: 4px solid var(--dark-border); border-radius: 20px 20px 0 0;
-            bottom: 10px; right: 15px; transform: rotate(25deg); box-shadow: 4px 4px 0 var(--dark-border);
-        }
-        .hand-l::after, .hand-r::after {
-            content: ''; position: absolute; width: 4px; height: 15px; background: var(--dark-border);
-            top: 5px; left: 10px; box-shadow: 6px 0 0 var(--dark-border); border-radius: 2px;
-        }
-
-        /* ---------- 5. 神龍獻瑞 & 6. 祥獅賜福 ---------- */
-        .pop-badge-circle {
-            width: 80px; height: 80px;
-            border: 4px solid var(--dark-border);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 4px 4px 0 var(--dark-border);
-            position: relative; z-index: 2;
-        }
-        .pop-badge-circle i { font-size: 2.2rem; filter: drop-shadow(2px 2px 0px #FFF); }
-        
-        .bg-dragon { background-color: #FF8C00; }
-        .badge-dragon { background: #FF4B5C; color: #FFE066; }
-        
-        .bg-lion { background-color: #9932CC; }
-        .badge-lion { background: #FFE066; color: #1A252F; }
-
-
-        /* 內文區 */
-        .show-info {
-            padding: 20px 16px;
-            text-align: center;
-            background: #FFFFFF;
-            flex-grow: 1;
-        }
-        .show-info h4 {
-            font-size: 1.3rem;
-            color: var(--dark-border);
-            margin-bottom: 8px;
-            font-weight: 900;
-        }
-        .show-info p {
-            font-size: 0.95rem;
-            color: #4A5568;
-            line-height: 1.6;
-        }
-
-        footer {
-            background: linear-gradient(135deg, #2C3E50 0%, #1A252F 100%);
-            color: white; text-align: center; padding: 25px 16px; font-size: 0.85rem;
-        }
-    </style>
+  .fab{
+    margin:14px 4px 2px; width:100%; padding:13px; border-radius:16px; border:2px solid var(--ink);
+    background:var(--leaf); color:#fff; font-family:'Baloo 2'; font-weight:700; font-size:15px;
+    box-shadow:0 4px 0 var(--leaf-deep); cursor:pointer;
+  }
+  .fab:active{ transform:translateY(2px); box-shadow:0 2px 0 var(--leaf-deep); }
+</style>
 </head>
 <body>
-
-    <div class="pony-background-wrapper">
-        <div class="sun-glow"></div>
-        <div class="pony-pattern-layer"></div>
+<div class="phone">
+  <div class="notch"></div>
+  <div class="app">
+    <div class="topbar">
+      <div class="brand"><div class="dot"></div><h1>穿搭鏡</h1></div>
+      <div class="icon-btn" title="我的身型" style="font-size:11px;font-weight:800;">身型</div>
     </div>
 
-    <header class="hero">
-        <div class="header-group">
-            <p class="association-title">太極門氣功養生學會60週年</p>
-            <p class="association-title">新竹道館34週年館慶</p>
+    <div class="cats" id="cats"></div>
+
+    <div class="stage" id="stage">
+      <div class="cloud" style="width:36px;height:16px;top:14px;left:20px;"></div>
+      <div class="cloud" style="width:26px;height:12px;top:26px;left:52px;"></div>
+      <div class="cloud" style="width:30px;height:14px;top:18px;right:26px;"></div>
+      <div class="stage-chip" id="stageChip">目前試穿：T恤</div>
+      <svg class="figure" id="figureSvg" viewBox="0 0 120 200" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div class="stage-rotate">
+        <div class="icon-btn rotate-btn" aria-label="向左旋轉"><span class="tri tri-left"></span></div>
+        <div class="icon-btn rotate-btn" aria-label="向右旋轉"><span class="tri tri-right"></span></div>
+      </div>
+    </div>
+
+    <div class="verdict-banner" id="verdictBanner">
+      <div class="verdict-badge" id="verdictBadge">合身</div>
+      <div>
+        <div class="t1">整體判定</div>
+        <div class="t2" id="verdictText">請先輸入身型與衣服尺寸</div>
+      </div>
+    </div>
+
+    <div class="sheet">
+      <div class="tabs">
+        <div class="tab active" data-tab="cloth">衣服標示尺寸</div>
+        <div class="tab" data-tab="result">分析結果</div>
+        <div class="tab" data-tab="body">我的身型</div>
+      </div>
+
+      <div class="panel" id="panel-body">
+        <div class="lock-bar" id="lockBar">
+          <div class="lock-label" id="lockLabel"><span class="status-dot" id="lockDot"></span>目前可編輯身型資料</div>
+          <button class="lock-btn" id="lockBtn" type="button">輸入完成，鎖定</button>
         </div>
-        <h1 class="main-theme">和平永續 福馬奔騰</h1>
-        <div class="event-tag">文化饗宴</div>
-
-        <h3 class="video-title">
-            <i class="fa-solid fa-star" style="color: var(--primary-orange);"></i> 精彩回顧 <i class="fa-solid fa-star" style="color: var(--primary-orange);"></i>
-        </h3>
-
-        <div class="video-container">
-            <div class="video-wrapper">
-                <iframe src="https://www.youtube.com/embed/Kv36zzfq0O8" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-            </div>
+        <div class="grid2" id="bodyInputsGrid">
+          <div class="field"><label>身高 (cm)</label><input type="number" id="b_height" value="175"></div>
+          <div class="field"><label>體重 (kg)<span class="opt">選填</span></label><input type="number" id="b_weight" placeholder="選填"></div>
+          <div class="field"><label>肩寬 (cm)</label><input type="number" id="b_shoulder" value="45"></div>
+          <div class="field"><label>胸圍 (cm)</label><input type="number" id="b_chest" value="92"></div>
+          <div class="field"><label>腰圍 (cm)</label><input type="number" id="b_waist" value="80"></div>
+          <div class="field"><label>臀圍 (cm)</label><input type="number" id="b_hip" value="96"></div>
+          <div class="field"><label>頸圍 (cm)<span class="opt">選填</span></label><input type="number" id="b_neck" placeholder="選填"></div>
+          <div class="field"><label>胯下長 (cm)</label><input type="number" id="b_inseam" value="78"></div>
+          <div class="field"><label>大腿圍 (cm)</label><input type="number" id="b_thigh" value="54"></div>
+          <div class="field"><label>小腿圍 (cm)<span class="opt">選填</span></label><input type="number" id="b_calf" placeholder="選填"></div>
         </div>
+        <div class="hint">身材偏瘦／偏壯會影響「建議衣長」的判斷，可依實際感受調整體型（下方衣服分頁會用到）。</div>
+      </div>
 
-        <div class="countdown" id="countdown">
-            <div class="countdown-item"><div class="countdown-num" id="days">00</div><div class="countdown-label">天</div></div>
-            <div class="countdown-item"><div class="countdown-num" id="hours">00</div><div class="countdown-label">時</div></div>
-            <div class="countdown-item"><div class="countdown-num" id="minutes">00</div><div class="countdown-label">分</div></div>
-            <div class="countdown-item"><div class="countdown-num" id="seconds">00</div><div class="countdown-label">秒</div></div>
+      <div class="panel active" id="panel-cloth">
+        <div class="field">
+          <label>體型偏好（影響衣長建議）</label>
+          <select id="c_build" style="width:100%;padding:9px;border-radius:12px;border:2px solid var(--card-edge);font-weight:700;">
+            <option value="0">標準</option>
+            <option value="-2">偏瘦</option>
+            <option value="2">偏壯</option>
+            <option value="4">想要 oversize</option>
+          </select>
         </div>
-
-        <div class="simple-time-box">
-            <div class="time-badge">活動舉辦日</div>
-            <div class="time-box-row">
-                <div class="simple-date">5/17</div>
-                <div class="simple-week">星期日</div>
-                <div class="simple-divider"></div>
-                <div class="simple-hours">10:00 - 11:30</div>
-            </div>
+        <div id="topFields">
+          <div class="grid2">
+            <div class="field"><label>衣長 (cm)</label><input type="number" id="c_length" value="72"></div>
+            <div class="field"><label>肩寬 (cm)</label><input type="number" id="c_shoulder" value="47"></div>
+            <div class="field"><label>胸圍 (cm)</label><input type="number" id="c_chest" value="100"></div>
+          </div>
         </div>
-    </header>
-
-    <main class="container">
-        
-        <section class="info-section">
-            <h2 class="section-title" style="font-size: 1.5rem; margin-bottom: 15px;">活動地點</h2>
-            <div style="font-size: 2rem; color: var(--primary-orange); margin-bottom: 5px;">
-                <i class="fa-solid fa-map-location-dot"></i>
-            </div>
-            <p style="font-size: 1rem; line-height: 1.5; margin: 12px 0 5px; color: #34495E;">
-                <strong>新竹市勞工及青年處</strong><br>
-                <span style="font-size: 0.9rem; color: #7F8C8D;">新竹市東區龍山西路99號5樓</span>
-            </p>
-            
-            <div class="map-embed-container-flat">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3621.8492067756773!2d121.00743751167448!3d24.790585347895696!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x346835c92b8041d1%3A0x4ff1249d7d747ddb!2z5paw5b955biC5pS_5bqc6L6m5bel5Y-K6Z2S5pS_6JmV!5e0!3m2!1szh-TW!2stw!4v1714900000000!5m2!1szh-TW!2stw" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-            </div>
-
-            <a href="https://www.google.com/maps/dir/?api=1&destination=%E6%96%B0%E7%AB%B9%E5%B8%82%E6%94%BF%E5%BA%9C%E5%8B%9E%E5%B7%A5%E5%8F%8A%E9%9D%92%E5%B9%B4%E8%99%95&destination_place_id=ChIJ0UGAK8k1aDQRu330fZ0k8U8&hl=zh-TW" target="_blank" class="btn-map">
-                <i class="fa-solid fa-location-arrow"></i> 開啟地圖導航
-            </a>
-        </section>
-
-        <section>
-            <h2 class="section-title">精采展演內容</h2>
-            <p class="section-invitation">
-                誠摯邀請您攜手親朋好友<br>
-                一同共襄盛舉，<br>
-                在喜慶與祥和的正氣中，<br>
-                共譜健康、快樂與幸福的<br>
-                美好樂章！
-            </p>
-            
-            <div class="show-grid">
-                
-                <div class="show-card">
-                    <div class="pop-illustration bg-drum">
-                        <div class="halftone-overlay"></div>
-                        <div class="pop-icon-drum">
-                            <div class="drum-cylinder"></div>
-                            <div class="drum-top-surface"></div>
-                            <div class="drum-dots"></div>
-                        </div>
-                    </div>
-                    <div class="show-info">
-                        <h4>神鼓齊鳴</h4>
-                        <p>鼓聲動地、銅鑼齊鳴！震撼人心鼓藝傳遞振奮的正能量，喚醒心中的無比勇氣與祥和氣場。</p>
-                    </div>
-                </div>
-
-                <div class="show-card">
-                    <div class="pop-illustration bg-ribbon">
-                        <div class="halftone-overlay"></div>
-                        <div class="pop-icon-ribbon">
-                            <div class="stick-cross-1"></div>
-                            <div class="stick-cross-2"></div>
-                            <div class="ribbon-loop-1"></div>
-                            <div class="ribbon-loop-2"></div>
-                        </div>
-                    </div>
-                    <div class="show-info">
-                        <h4>神采腰鼓</h4>
-                        <p>手持喜慶小鼓與繽紛彩帶，動態流線呈現腰鼓養生功法，展現精氣奕奕的生命大智慧。</p>
-                    </div>
-                </div>
-
-                <div class="show-card">
-                    <div class="pop-illustration bg-youth">
-                        <div class="halftone-overlay"></div>
-                        <div class="pop-icon-youth">
-                            <div class="youth-figure">
-                                <div class="youth-head boy-head"></div>
-                                <div class="youth-body boy-body"></div>
-                            </div>
-                            <div class="youth-figure">
-                                <div class="youth-head girl-head"></div>
-                                <div class="youth-body girl-body"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="show-info">
-                        <h4>活力青年</h4>
-                        <p>朝氣蓬勃的青年世代，以俐落帥氣的身段與自信笑容呈現武術活力，傳遞愛與薪火相傳的無限希望。</p>
-                    </div>
-                </div>
-
-                <div class="show-card">
-                    <div class="pop-illustration bg-dragon">
-                        <div class="halftone-overlay"></div>
-                        <div class="pop-badge-circle badge-dragon">
-                            <i class="fa-solid fa-dragon"></i>
-                        </div>
-                    </div>
-                    <div class="show-info">
-                        <h4>神龍獻瑞</h4>
-                        <p>金光燦爛的神龍威武翻騰，展現祥瑞神龍舞的磅礡氣勢，象徵慈悲與福澤連綿。</p>
-                    </div>
-                </div>
-
-                <div class="show-card">
-                    <div class="pop-illustration bg-lion">
-                        <div class="halftone-overlay"></div>
-                        <div class="pop-badge-circle badge-lion">
-                            <i class="fa-solid fa-paw"></i>
-                        </div>
-                    </div>
-                    <div class="show-info">
-                        <h4>祥獅賜福</h4>
-                        <p>活潑靈動的祥獅躍動，吐瑞氣迎吉祥，驅散陰霾，帶來福氣臨門與滿堂歡喜。</p>
-                    </div>
-                </div>
-
-                <div class="show-card">
-                    <div class="pop-illustration bg-sign">
-                        <div class="halftone-overlay"></div>
-                        <div class="pop-icon-sign">
-                            <div class="hand-l"></div>
-                            <div class="hand-r"></div>
-                            <i class="fa-solid fa-heart pop-fa-heart"></i>
-                        </div>
-                    </div>
-                    <div class="show-info">
-                        <h4>樂活手語</h4>
-                        <p>指尖流動著溫暖的音符，用無聲的語言傳遞純粹的關懷，溫暖社會的每一個角落。</p>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-    </main>
-
-    <section class="dojo-contact-section">
-        <div class="dojo-contact-card">
-            <p class="dojo-info-text-single">
-                新竹道館：新竹市光復路二段375號<br>電話：<a href="tel:03-5728103">03-5728103</a>
-            </p>
+        <div id="pantFields" style="display:none;">
+          <div class="grid2">
+            <div class="field"><label>褲長 (cm)</label><input type="number" id="p_length" value="100"></div>
+            <div class="field"><label>腰寬 (平量,cm)</label><input type="number" id="p_waist" value="40"></div>
+            <div class="field"><label>臀圍 (cm)</label><input type="number" id="p_hip" value="104"></div>
+            <div class="field"><label>大腿圍 (cm)</label><input type="number" id="p_thigh" value="60"></div>
+          </div>
+          <div class="hint">腰寬會自動 ×2 換算成腰圍再比對。</div>
         </div>
-    </section>
+      </div>
 
-    <footer>
-        <p>© 2026 太極門氣功養生學會新竹道館 版權所有</p>
-    </footer>
+      <div class="panel" id="panel-result">
+        <div class="results" id="resultsBox"></div>
+        <div class="hint" id="lengthHint"></div>
+      </div>
 
-    <script>
-        // 倒數計時
-        const targetDate = new Date("May 17, 2026 10:00:00").getTime();
-        const timer = setInterval(function() {
-            const now = new Date().getTime();
-            const distance = targetDate - now;
+      <div style="padding:0 14px;"><button class="fab" id="analyzeBtn">分析這件衣服</button></div>
+    </div>
+  </div>
+</div>
 
-            if (distance < 0) {
-                clearInterval(timer);
-                document.getElementById("countdown").innerHTML = "<div style='font-size:1.4rem; font-weight:900; color:var(--primary-red);'>活動正精彩進行中！</div>";
-                return;
-            }
+<script>
+const CATS = ["T恤","襯衫","毛衣","西裝","大學T","夾克","大衣","褲子"];
+const catsEl = document.getElementById('cats');
+let activeCat = "T恤";
 
-            document.getElementById("days").innerText = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
-            document.getElementById("hours").innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
-            document.getElementById("minutes").innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
-            document.getElementById("seconds").innerText = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
-        }, 1000);
-    </script>
+function selectCat(c, el){
+  activeCat = c;
+  document.querySelectorAll('.cat').forEach(x=>x.classList.remove('active'));
+  el.classList.add('active');
+  el.classList.remove('pulse'); void el.offsetWidth; el.classList.add('pulse');
+
+  document.getElementById('topFields').style.display = c==='褲子' ? 'none':'block';
+  document.getElementById('pantFields').style.display = c==='褲子' ? 'block':'none';
+
+  const chip = document.getElementById('stageChip');
+  if(chip) chip.textContent = '目前試穿：' + c;
+
+  // make sure the person can see the fields that changed
+  switchTab('cloth');
+  render();
+}
+
+CATS.forEach(c=>{
+  const d=document.createElement('div');
+  d.className='cat'+(c===activeCat?' active':'');
+  d.textContent=c; d.dataset.cat=c;
+  d.setAttribute('role','button');
+  d.tabIndex=0;
+  d.addEventListener('click', ()=> selectCat(c, d));
+  d.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); selectCat(c, d); } });
+  catsEl.appendChild(d);
+});
+
+// tabs
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+  const tabEl = document.querySelector('.tab[data-tab="'+name+'"]');
+  const panelEl = document.getElementById('panel-'+name);
+  if(tabEl) tabEl.classList.add('active');
+  if(panelEl) panelEl.classList.add('active');
+}
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click', ()=> switchTab(t.dataset.tab));
+});
+
+// body lock
+let bodyLocked = false;
+function updateLockUI(){
+  const grid = document.getElementById('bodyInputsGrid');
+  const bar = document.getElementById('lockBar');
+  const label = document.getElementById('lockLabel');
+  const btn = document.getElementById('lockBtn');
+  grid.querySelectorAll('input').forEach(inp=> inp.disabled = bodyLocked);
+  bar.classList.toggle('is-locked', bodyLocked);
+  label.innerHTML = '<span class="status-dot" id="lockDot"></span>' + (bodyLocked ? '身型資料已鎖定，避免誤觸' : '目前可編輯身型資料');
+  btn.textContent = bodyLocked ? '解鎖修改' : '輸入完成，鎖定';
+}
+document.getElementById('lockBtn').addEventListener('click', ()=>{
+  bodyLocked = !bodyLocked;
+  updateLockUI();
+});
+updateLockUI();
+
+// ---- reference tables (from source charts) ----
+const CHEST_TABLE = {
+  "T恤":   {fit:[2,4], loose:[8,8], baggy:[12,999]},
+  "襯衫":  {fit:[4,6], loose:[8,10], baggy:[14,999]},
+  "毛衣":  {fit:[2,6], loose:[6,10], baggy:[12,999]},
+  "西裝":  {fit:[8,8], loose:[10,12], baggy:[14,999]},
+  "大學T": {fit:[10,14], loose:[18,22], baggy:[24,999]},
+  "夾克":  {fit:[12,16], loose:[20,24], baggy:[28,999]},
+  "大衣":  {fit:[15,20], loose:[24,26], baggy:[30,999]},
+};
+const SHOULDER_STEPS = {fit:[2,3], loose:[4,6], baggy:[7,12]}; // beyond 12 -> 過大
+const WAIST_TABLE = {tight:[0,2], slim:[1,2], fit:[1,3], relax:[1,4], loose:[2,4]};
+const HIP_TABLE   = {tight:[0,4], slim:[5,10], fit:[10,15], relax:[15,20], loose:[20,999]};
+const THIGH_TABLE = {tight:[2,3], slim:[4,6], fit:[6,8], relax:[8,10], loose:[10,999]};
+
+function classifyByThreeStage(diff, table){
+  // table: {fit:[min,max], loose:[min,max], baggy:[min,max]}
+  if(diff < table.fit[0]) return {label:"貼身", tone:"coral"};
+  if(diff <= table.fit[1]) return {label:"合身", tone:"leaf"};
+  if(diff <= table.loose[1]) return {label:"微寬鬆", tone:"sun"};
+  if(diff <= table.baggy[1]) return {label:"寬鬆", tone:"sky"};
+  return {label:"oversize", tone:"lav"};
+}
+function classifyShoulder(diff){
+  if(diff < 0) return {label:"太窄／緊繃", tone:"coral"};
+  if(diff <= SHOULDER_STEPS.fit[1]) return {label:"合身", tone:"leaf"};
+  if(diff <= SHOULDER_STEPS.loose[1]) return {label:"微寬鬆", tone:"sun"};
+  if(diff <= SHOULDER_STEPS.baggy[1]) return {label:"oversize", tone:"lav"};
+  return {label:"過大", tone:"sky"};
+}
+function classifyPantsPart(diff, table){
+  // table: {tight,slim,fit,relax,loose} each [min,max]
+  if(diff < table.tight[0]) return {label:"太緊", tone:"coral"};
+  if(diff <= table.tight[1]) return {label:"緊身", tone:"coral"};
+  if(diff <= table.slim[1]) return {label:"修身", tone:"sun"};
+  if(diff <= table.fit[1]) return {label:"合身", tone:"leaf"};
+  if(diff <= table.relax[1]) return {label:"休閒", tone:"sky"};
+  return {label:"寬鬆", tone:"lav"};
+}
+const TONE_COLORS = {
+  coral:{bg:"#FFD9CC", bd:"#E5623F", fg:"#B94722"},
+  leaf: {bg:"#DCF2C6", bd:"#6FB43F", fg:"#3F7A20"},
+  sun:  {bg:"#FFF0BF", bd:"#E5A924", fg:"#8A6A0A"},
+  sky:  {bg:"#D3EEF9", bd:"#3E9BC7", fg:"#276E90"},
+  lav:  {bg:"#E7DFF7", bd:"#9481C4", fg:"#5E4E93"},
+};
+
+function num(id, dflt){ const v = parseFloat(document.getElementById(id).value); return isNaN(v)? dflt : v; }
+
+// Pixel sprite grid — retro 8-bit block style (12 cols x 20 rows).
+// Legend: . empty | H hair | F face/skin | E eye | O outfit (dynamic tone color) | P pants | S shoe/outline
+const SPRITE_ROWS = [
+  "..HHHHHHHH..",
+  ".HHHHHHHHHH.",
+  ".HFFFFFFFFH.",
+  ".HFFEFFEFFH.",
+  ".HFFFFFFFFH.",
+  "..HFFFFFFH..",
+  "...FFFFFF...",
+  "..OOOOOOOO..",
+  ".FOOOOOOOOF.",
+  ".FOOOOOOOOF.",
+  ".FOOOOOOOOF.",
+  ".FOOOOOOOOF.",
+  "..OOOOOOOO..",
+  "..PPPPPPPP..",
+  "..PPPPPPPP..",
+  "..PPPPPPPP..",
+  "..PPPPPPPP..",
+  "..PP....PP..",
+  "..PP....PP..",
+  ".SSS....SSS.",
+];
+const PIXEL = 10; // px per grid cell in the 120x200 viewBox
+
+function drawFigure(overallTone){
+  const svg = document.getElementById('figureSvg');
+  const outfitColor = TONE_COLORS[overallTone] ? TONE_COLORS[overallTone].bd : "#6FB43F";
+  const PALETTE = {
+    H: "#4B3524", // hair
+    F: "#F6D3A6", // skin
+    E: "#2B2B26", // eyes
+    O: outfitColor, // outfit — reflects fit result
+    P: "#4B5B7C", // pants
+    S: "#2B2B26", // shoes/outline
+  };
+  let rects = '<rect x="14" y="192" width="92" height="6" fill="#000" opacity="0.10"/>';
+  SPRITE_ROWS.forEach((row, r)=>{
+    for(let c=0;c<row.length;c++){
+      const code = row[c];
+      if(code === '.') continue;
+      rects += `<rect x="${c*PIXEL}" y="${r*PIXEL}" width="${PIXEL}" height="${PIXEL}" fill="${PALETTE[code]}"/>`;
+    }
+  });
+  svg.innerHTML = rects;
+}
+
+function placeTags(items){
+  document.querySelectorAll('.tag').forEach(t=>t.remove());
+  const stage = document.getElementById('stage');
+  const positions = {
+    "肩寬":{top:76,left:'22%'}, "胸圍":{top:112,left:'78%'},
+    "衣長":{top:170,left:'80%'}, "腰圍":{top:150,left:'20%'},
+    "臀圍":{top:180,left:'78%'}, "大腿圍":{top:210,left:'20%'}, "褲長":{top:230,left:'80%'}
+  };
+  items.forEach(it=>{
+    const pos = positions[it.name]; if(!pos) return;
+    const c = TONE_COLORS[it.tone];
+    const el = document.createElement('div');
+    el.className='tag';
+    el.style.top = pos.top+'px'; el.style.left = pos.left;
+    el.style.background = c.bg; el.style.borderColor = c.bd; el.style.color = c.fg;
+    el.textContent = it.name+' '+it.label;
+    stage.appendChild(el);
+  });
+}
+
+function overallFromList(items){
+  const order = ["coral","leaf","sun","sky","lav"];
+  const counts = {}; items.forEach(i=>counts[i.tone]=(counts[i.tone]||0)+1);
+  let best = items[0] ? items[0].tone : "leaf"; let bestCount=-1;
+  order.forEach(t=>{ if((counts[t]||0) > bestCount){ bestCount=counts[t]||0; best=t; }});
+  return best;
+}
+
+const VERDICT_TEXT = {
+  coral: {label:"偏緊", text:"整體偏緊，建議加大一號或另選版型"},
+  leaf:  {label:"合身", text:"整體剛好合身，穿起來會很服貼"},
+  sun:   {label:"微寬鬆", text:"整體微寬鬆，休閒好活動"},
+  sky:   {label:"寬鬆", text:"整體寬鬆，秋冬疊搭剛好"},
+  lav:   {label:"oversize", text:"整體 oversize，街頭感十足"},
+};
+
+function render(){
+  const height = num('b_height',175);
+  const shoulderBody = num('b_shoulder',45);
+  const chestBody = num('b_chest',92);
+  const waistBody = num('b_waist',80);
+  const hipBody = num('b_hip',96);
+  const thighBody = num('b_thigh',54);
+  const buildAdj = parseFloat(document.getElementById('c_build').value)||0;
+
+  let items = [];
+  let lengthHint = "";
+  const resultsBox = document.getElementById('resultsBox');
+  resultsBox.innerHTML = "";
+
+  function addRow(name, bodyVal, clothVal, cls){
+    const diff = clothVal - bodyVal;
+    const c = TONE_COLORS[cls.tone];
+    const row = document.createElement('div');
+    row.className='res-row';
+    row.innerHTML = `<div><div class="res-name">${name}</div><div class="res-nums">身型 ${bodyVal}cm ・ 衣服 ${clothVal}cm ・ 差值 ${diff>0?'+':''}${diff.toFixed(1)}cm</div></div>
+      <div class="chip" style="background:${c.bg};border-color:${c.bd};color:${c.fg}">${cls.label}</div>`;
+    resultsBox.appendChild(row);
+    items.push({name, label:cls.label, tone:cls.tone});
+  }
+
+  if(activeCat !== "褲子"){
+    const clothLen = num('c_length',72);
+    const clothShoulder = num('c_shoulder',47);
+    const clothChest = num('c_chest',100);
+
+    const chestDiff = clothChest - chestBody;
+    const chestCls = classifyByThreeStage(chestDiff, CHEST_TABLE[activeCat] || CHEST_TABLE["T恤"]);
+    addRow("胸圍", chestBody, clothChest, chestCls);
+
+    const shoulderDiff = clothShoulder - shoulderBody;
+    const shoulderCls = classifyShoulder(shoulderDiff);
+    addRow("肩寬", shoulderBody, clothShoulder, shoulderCls);
+
+    const suggestedLen = (height*0.41 + buildAdj);
+    const lenDiff = clothLen - suggestedLen;
+    let lenLabel, lenTone;
+    if(lenDiff < -3){ lenLabel="偏短"; lenTone="coral"; }
+    else if(lenDiff <= 1.5){ lenLabel="長度剛好"; lenTone="leaf"; }
+    else if(lenDiff <= 5){ lenLabel="偏長"; lenTone="sky"; }
+    else { lenLabel="很長／oversize款"; lenTone="lav"; }
+    addRow("衣長", Math.round(suggestedLen*10)/10, clothLen, {label:lenLabel, tone:lenTone});
+    lengthHint = `建議衣長 ≈ 身高×0.41 ${buildAdj?(buildAdj>0?'+':'')+buildAdj+'cm':''} = ${suggestedLen.toFixed(1)}cm（±1cm 為最佳區間）`;
+  } else {
+    const pLen = num('p_length',100);
+    const pWaistFlat = num('p_waist',40);
+    const pHip = num('p_hip',104);
+    const pThigh = num('p_thigh',60);
+    const pWaistCirc = pWaistFlat*2;
+
+    addRow("腰圍", waistBody, pWaistCirc, classifyPantsPart(pWaistCirc-waistBody, WAIST_TABLE));
+    addRow("臀圍", hipBody, pHip, classifyPantsPart(pHip-hipBody, HIP_TABLE));
+    addRow("大腿圍", thighBody, pThigh, classifyPantsPart(pThigh-thighBody, THIGH_TABLE));
+
+    const nineLen = height*0.55;
+    const floorLen = nineLen + 5;
+    let lenLabel, lenTone;
+    if(pLen < nineLen-3){ lenLabel="偏短／九分以上"; lenTone="sun"; }
+    else if(pLen <= nineLen+3){ lenLabel="九分褲長"; lenTone="leaf"; }
+    else if(pLen <= floorLen+2){ lenLabel="接近落地"; lenTone="sky"; }
+    else { lenLabel="拖地／需改褲長"; lenTone="lav"; }
+    addRow("褲長", Math.round(nineLen*10)/10, pLen, {label:lenLabel, tone:lenTone});
+    lengthHint = `參考：九分褲長 ≈ 身高×0.55 = ${nineLen.toFixed(1)}cm；落地褲長 ≈ ${floorLen.toFixed(1)}cm（此公式僅供參考，實際依個人習慣為準）`;
+  }
+
+  document.getElementById('lengthHint').textContent = lengthHint;
+  const overallTone = overallFromList(items);
+  const v = VERDICT_TEXT[overallTone];
+  const badge = document.getElementById('verdictBadge');
+  const c = TONE_COLORS[overallTone];
+  badge.textContent = v.label;
+  badge.style.background = c.bg; badge.style.borderColor = c.bd; badge.style.color = c.fg;
+  document.getElementById('verdictText').textContent = v.text;
+  drawFigure(overallTone);
+  placeTags(items);
+}
+
+document.querySelectorAll('input, select').forEach(el=>el.addEventListener('input', render));
+document.getElementById('analyzeBtn').addEventListener('click', ()=>{
+  switchTab('result');
+  render();
+});
+
+render();
+</script>
 </body>
 </html>
