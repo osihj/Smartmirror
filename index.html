@@ -52,19 +52,35 @@
   .icon-btn{
     width:34px;height:34px;border-radius:12px;background:var(--card);
     border:2px solid var(--ink); display:flex;align-items:center;justify-content:center;
-    font-size:16px; box-shadow:0 3px 0 rgba(58,52,42,0.25);
+    font-size:16px; box-shadow:0 3px 0 rgba(58,52,42,0.25); cursor:pointer;
   }
 
-  /* category pills */
-  .cats{ display:flex; gap:8px; overflow-x:auto; padding:10px 2px 14px; scrollbar-width:none;}
-  .cats::-webkit-scrollbar{display:none;}
-  .cat{
-    flex:0 0 auto; padding:8px 14px; border-radius:999px; border:2px solid var(--ink);
-    background:var(--card); font-size:13px; font-weight:700; cursor:pointer; white-space:nowrap;
-    box-shadow:0 3px 0 rgba(58,52,42,0.2);
+  /* category dropdown */
+  .type-select-wrap{ margin:6px 2px 12px; }
+  .type-select-wrap label{ display:block; font-size:12px; font-weight:800; color:var(--ink-soft); margin-bottom:6px; }
+  .select-shell{ position:relative; }
+  .select-shell::after{
+    content:"▾"; position:absolute; right:16px; top:50%; transform:translateY(-50%);
+    font-weight:900; pointer-events:none; color:var(--ink); font-size:14px;
   }
-  .cat, .tab, .icon-btn, .fab, .lock-btn{ touch-action:manipulation; }
-  .cat.active{ background:var(--sun); }
+  .type-select{
+    width:100%; padding:12px 40px 12px 14px; border-radius:16px; border:2px solid var(--ink);
+    background:var(--card); font-family:inherit; font-weight:800; font-size:15px; color:var(--ink);
+    appearance:none; -webkit-appearance:none; -moz-appearance:none;
+    box-shadow:0 3px 0 rgba(58,52,42,0.2); cursor:pointer;
+  }
+
+  /* preset quick-chip row */
+  .presets-row{ display:flex; gap:8px; overflow-x:auto; padding:0 2px 14px; scrollbar-width:none; }
+  .presets-row::-webkit-scrollbar{ display:none; }
+  .preset-chip{
+    flex:0 0 auto; display:flex; align-items:center; gap:5px; padding:7px 13px; border-radius:999px;
+    border:2px solid var(--ink); background:var(--card); font-size:12px; font-weight:800;
+    white-space:nowrap; box-shadow:0 2px 0 rgba(58,52,42,0.2); cursor:pointer;
+  }
+  .preset-chip.add{ background:var(--sun); }
+  .preset-chip .del-x{ margin-left:2px; color:var(--coral-deep); font-weight:900; }
+  .presets-empty-hint{ font-size:11px; color:var(--ink-soft); padding:0 2px 12px; }
 
   /* stage */
   .stage{
@@ -106,9 +122,9 @@
     background:var(--card); border:2px solid var(--card-edge); border-radius:24px 24px 18px 18px;
     padding:6px 4px 16px; box-shadow:var(--shadow);
   }
-  .tabs{ display:flex; padding:10px 10px 0; gap:6px; }
+  .tabs{ display:flex; padding:10px 8px 0; gap:4px; }
   .tab{
-    flex:1; text-align:center; padding:9px 4px; font-weight:800; font-size:13.5px;
+    flex:1; text-align:center; padding:9px 2px; font-weight:800; font-size:12px;
     border-radius:14px 14px 0 0; cursor:pointer; color:var(--ink-soft);
   }
   .tab.active{ background:#FFF; color:var(--ink); border:2px solid var(--card-edge); border-bottom:none; }
@@ -118,12 +134,16 @@
   .field{ margin-bottom:11px; }
   .field label{ display:flex; justify-content:space-between; font-size:12.5px; font-weight:700; color:var(--ink-soft); margin-bottom:4px; }
   .field label span.opt{ font-weight:500; color:#B7AF9F; }
-  .field input[type=number]{
+  .field input[type=number], .field input[type=text]{
     width:100%; padding:9px 10px; border-radius:12px; border:2px solid var(--card-edge);
     font-size:16px; font-family:inherit; background:#FFFDF8; color:var(--ink); font-weight:700;
   }
-  .field input[type=number]:focus{ outline:none; border-color:var(--sky-btn); }
+  .field input[type=number]:focus, .field input[type=text]:focus{ outline:none; border-color:var(--sky-btn); }
   .field input[type=number]:disabled{ background:#EFEAE0; color:var(--ink-soft); border-color:#E4DCC9; cursor:not-allowed; }
+  .field select.simple-select{
+    width:100%;padding:9px;border-radius:12px;border:2px solid var(--card-edge);
+    font-weight:700;font-family:inherit;font-size:14px;background:#FFFDF8;color:var(--ink);
+  }
   .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:0 10px; }
 
   .lock-bar{
@@ -145,8 +165,6 @@
     background:var(--card); border:2px solid var(--ink); font-size:12px; font-weight:800;
     box-shadow:0 2px 0 rgba(58,52,42,0.25); z-index:5;
   }
-  .cat.pulse{ animation:catpulse .35s ease; }
-  @keyframes catpulse{ 0%{ transform:scale(1);} 40%{ transform:scale(1.12);} 100%{ transform:scale(1);} }
 
   .results{ padding:4px 14px 14px; }
   .res-row{
@@ -170,16 +188,49 @@
     box-shadow:0 4px 0 var(--leaf-deep); cursor:pointer;
   }
   .fab:active{ transform:translateY(2px); box-shadow:0 2px 0 var(--leaf-deep); }
+
+  /* preset manager tab */
+  .preset-add-box{
+    border:2px dashed var(--card-edge); border-radius:16px; padding:12px; margin-bottom:14px; background:#FFFDF8;
+  }
+  .preset-add-box .field{ margin-bottom:8px; }
+  .btn-solid{
+    width:100%; padding:10px; border-radius:12px; border:2px solid var(--ink); font-weight:800;
+    font-size:13px; cursor:pointer; background:var(--sun); box-shadow:0 3px 0 rgba(58,52,42,0.2);
+  }
+  .btn-solid:active{ transform:translateY(2px); box-shadow:none; }
+  .preset-card{
+    border:2px solid var(--card-edge); border-radius:16px; padding:11px 13px; margin-bottom:10px; background:#FFFDF8;
+  }
+  .preset-card-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:6px; }
+  .preset-card-name{ font-weight:800; font-size:13.5px; }
+  .preset-card-cat{ font-size:11px; color:var(--ink-soft); font-weight:700; margin-top:2px; }
+  .preset-card-vals{ font-size:11px; color:var(--ink-soft); line-height:1.6; margin-bottom:9px; }
+  .preset-card-actions{ display:flex; gap:8px; }
+  .btn-mini{
+    flex:1; padding:7px 4px; border-radius:10px; border:2px solid var(--ink); font-weight:800;
+    font-size:12px; cursor:pointer; text-align:center; background:var(--card);
+  }
+  .btn-mini.primary{ background:var(--leaf); color:#fff; }
+  .btn-mini.danger{ background:#FFD9CC; }
+  .empty-state{ text-align:center; padding:22px 10px; color:var(--ink-soft); font-size:12.5px; line-height:1.7; }
 </style>
 </head>
 <body>
   <div class="app">
     <div class="topbar">
       <div class="brand"><div class="dot"></div><h1>穿搭鏡</h1></div>
-      <div class="icon-btn" title="我的身型" style="font-size:11px;font-weight:800;">身型</div>
+      <div class="icon-btn" id="bodyShortcutBtn" title="我的身型" style="font-size:11px;font-weight:800;">身型</div>
     </div>
 
-    <div class="cats" id="cats"></div>
+    <div class="type-select-wrap">
+      <label>服裝類型</label>
+      <div class="select-shell">
+        <select class="type-select" id="categorySelect"></select>
+      </div>
+    </div>
+
+    <div class="presets-row" id="presetsRow"></div>
 
     <div class="stage" id="stage">
       <div class="cloud" style="width:36px;height:16px;top:14px;left:20px;"></div>
@@ -203,9 +254,10 @@
 
     <div class="sheet">
       <div class="tabs">
-        <div class="tab active" data-tab="cloth">衣服標示尺寸</div>
+        <div class="tab active" data-tab="cloth">衣服尺寸</div>
         <div class="tab" data-tab="result">分析結果</div>
         <div class="tab" data-tab="body">我的身型</div>
+        <div class="tab" data-tab="presets">常用版型</div>
       </div>
 
       <div class="panel" id="panel-body">
@@ -220,29 +272,40 @@
           <div class="field"><label>胸圍 (cm)</label><input type="number" inputmode="decimal" id="b_chest" value="92"></div>
           <div class="field"><label>腰圍 (cm)</label><input type="number" inputmode="decimal" id="b_waist" value="80"></div>
           <div class="field"><label>臀圍 (cm)</label><input type="number" inputmode="decimal" id="b_hip" value="96"></div>
+          <div class="field"><label>臂長 (cm)<span class="opt">肩點至手腕骨</span></label><input type="number" inputmode="decimal" id="b_arm" value="58"></div>
+          <div class="field"><label>肘長 (cm)<span class="opt">肩點至手肘，估算短袖</span></label><input type="number" inputmode="decimal" id="b_elbow" value="33"></div>
           <div class="field"><label>頸圍 (cm)<span class="opt">選填</span></label><input type="number" inputmode="decimal" id="b_neck" placeholder="選填"></div>
           <div class="field"><label>胯下長 (cm)</label><input type="number" inputmode="decimal" id="b_inseam" value="78"></div>
           <div class="field"><label>大腿圍 (cm)</label><input type="number" inputmode="decimal" id="b_thigh" value="54"></div>
           <div class="field"><label>小腿圍 (cm)<span class="opt">選填</span></label><input type="number" inputmode="decimal" id="b_calf" placeholder="選填"></div>
         </div>
-        <div class="hint">身材偏瘦／偏壯會影響「建議衣長」的判斷，可依實際感受調整體型（下方衣服分頁會用到）。</div>
+        <div class="hint">身材偏瘦／寬鬆會影響「建議衣長」的判斷，可依實際感受調整體型（下方衣服分頁會用到）。臂長用來換算長袖合身區間；肘長用來換算短袖合身區間。</div>
+        <div class="hint" id="shortSleeveBodyHint"></div>
       </div>
 
       <div class="panel active" id="panel-cloth">
         <div class="field">
           <label>體型偏好（影響衣長建議）</label>
-          <select id="c_build" style="width:100%;padding:9px;border-radius:12px;border:2px solid var(--card-edge);font-weight:700;">
-            <option value="0">標準</option>
-            <option value="-2">偏瘦</option>
-            <option value="2">偏壯</option>
-            <option value="4">想要 oversize</option>
+          <select id="c_build" class="simple-select">
+            <option value="-2">緊身</option>
+            <option value="0">合身</option>
+            <option value="2">寬鬆</option>
+            <option value="4">oversize</option>
           </select>
         </div>
         <div id="topFields">
+          <div class="field">
+            <label>袖型</label>
+            <select id="c_sleeveType" class="simple-select">
+              <option value="short">短袖</option>
+              <option value="long">長袖</option>
+            </select>
+          </div>
           <div class="grid2">
             <div class="field"><label>衣長 (cm)</label><input type="number" inputmode="decimal" id="c_length" value="72"></div>
             <div class="field"><label>肩寬 (cm)</label><input type="number" inputmode="decimal" id="c_shoulder" value="47"></div>
             <div class="field"><label>胸圍 (cm)</label><input type="number" inputmode="decimal" id="c_chest" value="100"></div>
+            <div class="field"><label>袖長 (cm)</label><input type="number" inputmode="decimal" id="c_sleeve" value="21"></div>
           </div>
         </div>
         <div id="pantFields" style="display:none;">
@@ -251,14 +314,38 @@
             <div class="field"><label>腰寬 (平量,cm)</label><input type="number" inputmode="decimal" id="p_waist" value="40"></div>
             <div class="field"><label>臀圍 (cm)</label><input type="number" inputmode="decimal" id="p_hip" value="104"></div>
             <div class="field"><label>大腿圍 (cm)</label><input type="number" inputmode="decimal" id="p_thigh" value="60"></div>
+            <div class="field"><label>檔深 (cm)<span class="opt">選填，判斷腰型</span></label><input type="number" inputmode="decimal" id="p_rise" placeholder="選填"></div>
           </div>
-          <div class="hint">腰寬會自動 ×2 換算成腰圍再比對。</div>
+          <div class="hint">腰寬會自動 ×2 換算成腰圍再比對；檔深 24~27cm 為中低腰，28~32cm 為高腰。</div>
         </div>
       </div>
 
       <div class="panel" id="panel-result">
         <div class="results" id="resultsBox"></div>
         <div class="hint" id="lengthHint"></div>
+        <div class="hint" id="sleeveHint"></div>
+      </div>
+
+      <div class="panel" id="panel-presets">
+        <div class="preset-add-box">
+          <div class="field">
+            <label>版型名稱<span class="opt">例：UNIQLO 男裝內衣 M</span></label>
+            <input type="text" id="presetNameInput" placeholder="輸入品牌／款式／尺碼名稱">
+          </div>
+          <div class="field">
+            <label>穿著心得<span class="opt">尺碼對照備註</span></label>
+            <select id="presetFitNoteInput" class="simple-select">
+              <option value="unknown">尚未試穿</option>
+              <option value="tight">太緊／偏小</option>
+              <option value="good">合身／剛好</option>
+              <option value="loose">偏大／寬鬆</option>
+              <option value="returned">已退貨</option>
+            </select>
+          </div>
+          <div class="hint" style="padding:0 0 8px;">會直接儲存目前「衣服尺寸」分頁裡的數值（含目前選擇的服裝類型），並記錄建立日期，方便日後當作尺碼對照的歷史紀錄。</div>
+          <button class="btn-solid" id="savePresetBtn" type="button">＋ 另存為常用版型</button>
+        </div>
+        <div id="presetList"></div>
       </div>
 
       <div style="padding:0 14px;"><button class="fab" id="analyzeBtn">分析這件衣服</button></div>
@@ -267,36 +354,35 @@
 
 <script>
 const CATS = ["T恤","襯衫","毛衣","西裝","大學T","夾克","大衣","褲子"];
-const catsEl = document.getElementById('cats');
+const SLEEVE_DEFAULT = { "T恤":"short","大學T":"short","襯衫":"long","毛衣":"long","西裝":"long","夾克":"long","大衣":"long" };
 let activeCat = "T恤";
+let presets = [];
 
-function selectCat(c, el){
-  activeCat = c;
-  document.querySelectorAll('.cat').forEach(x=>x.classList.remove('active'));
-  el.classList.add('active');
-  el.classList.remove('pulse'); void el.offsetWidth; el.classList.add('pulse');
+// ---- category dropdown ----
+const categorySelect = document.getElementById('categorySelect');
+CATS.forEach(c=>{
+  const opt = document.createElement('option');
+  opt.value = c; opt.textContent = c;
+  categorySelect.appendChild(opt);
+});
+categorySelect.value = activeCat;
 
+function updateCategoryUI(c){
   document.getElementById('topFields').style.display = c==='褲子' ? 'none':'block';
   document.getElementById('pantFields').style.display = c==='褲子' ? 'block':'none';
-
+  if(c !== '褲子' && SLEEVE_DEFAULT[c]){
+    document.getElementById('c_sleeveType').value = SLEEVE_DEFAULT[c];
+  }
   const chip = document.getElementById('stageChip');
   if(chip) chip.textContent = '目前試穿：' + c;
-
-  // make sure the person can see the fields that changed
+}
+categorySelect.addEventListener('change', ()=>{
+  activeCat = categorySelect.value;
+  updateCategoryUI(activeCat);
   switchTab('cloth');
   render();
-}
-
-CATS.forEach(c=>{
-  const d=document.createElement('div');
-  d.className='cat'+(c===activeCat?' active':'');
-  d.textContent=c; d.dataset.cat=c;
-  d.setAttribute('role','button');
-  d.tabIndex=0;
-  d.addEventListener('click', ()=> selectCat(c, d));
-  d.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); selectCat(c, d); } });
-  catsEl.appendChild(d);
 });
+updateCategoryUI(activeCat);
 
 // tabs
 function switchTab(name){
@@ -310,6 +396,7 @@ function switchTab(name){
 document.querySelectorAll('.tab').forEach(t=>{
   t.addEventListener('click', ()=> switchTab(t.dataset.tab));
 });
+document.getElementById('bodyShortcutBtn').addEventListener('click', ()=> switchTab('body'));
 
 // body lock
 let bodyLocked = false;
@@ -345,7 +432,6 @@ const HIP_TABLE   = {tight:[0,4], slim:[5,10], fit:[10,15], relax:[15,20], loose
 const THIGH_TABLE = {tight:[2,3], slim:[4,6], fit:[6,8], relax:[8,10], loose:[10,999]};
 
 function classifyByThreeStage(diff, table){
-  // table: {fit:[min,max], loose:[min,max], baggy:[min,max]}
   if(diff < table.fit[0]) return {label:"貼身", tone:"coral"};
   if(diff <= table.fit[1]) return {label:"合身", tone:"leaf"};
   if(diff <= table.loose[1]) return {label:"微寬鬆", tone:"sun"};
@@ -360,13 +446,31 @@ function classifyShoulder(diff){
   return {label:"過大", tone:"sky"};
 }
 function classifyPantsPart(diff, table){
-  // table: {tight,slim,fit,relax,loose} each [min,max]
   if(diff < table.tight[0]) return {label:"太緊", tone:"coral"};
   if(diff <= table.tight[1]) return {label:"緊身", tone:"coral"};
   if(diff <= table.slim[1]) return {label:"修身", tone:"sun"};
   if(diff <= table.fit[1]) return {label:"合身", tone:"leaf"};
-  if(diff <= table.relax[1]) return {label:"休閒", tone:"sky"};
+  if(diff <= table.relax[1]) return {label:"微寬鬆", tone:"sky"};
   return {label:"寬鬆", tone:"lav"};
+}
+function classifyLongSleeve(diff){
+  if(diff < 1) return {label:"偏短", tone:"coral"};
+  if(diff <= 2) return {label:"合身", tone:"leaf"};
+  if(diff <= 5) return {label:"微寬鬆", tone:"sun"};
+  if(diff <= 10) return {label:"Oversize/蓋手", tone:"lav"};
+  return {label:"過長", tone:"sky"};
+}
+function classifyShortSleeve(diff){
+  if(diff < -2) return {label:"偏短", tone:"coral"};
+  if(diff <= 2) return {label:"合身", tone:"leaf"};
+  if(diff <= 5) return {label:"寬鬆/落肩", tone:"sky"};
+  return {label:"極寬鬆", tone:"lav"};
+}
+function classifyRise(rise){
+  if(rise < 24) return {label:"低腰", tone:"coral"};
+  if(rise <= 27) return {label:"中低腰", tone:"leaf"};
+  if(rise <= 32) return {label:"高腰", tone:"sky"};
+  return {label:"極高腰", tone:"lav"};
 }
 const TONE_COLORS = {
   coral:{bg:"#FFD9CC", bd:"#E5623F", fg:"#B94722"},
@@ -376,10 +480,9 @@ const TONE_COLORS = {
   lav:  {bg:"#E7DFF7", bd:"#9481C4", fg:"#5E4E93"},
 };
 
-function num(id, dflt){ const v = parseFloat(document.getElementById(id).value); return isNaN(v)? dflt : v; }
+function num(id, dflt){ const el = document.getElementById(id); if(!el) return dflt; const v = parseFloat(el.value); return isNaN(v)? dflt : v; }
 
 // Pixel sprite grid — retro 8-bit block style (12 cols x 20 rows).
-// Legend: . empty | H hair | F face/skin | E eye | O outfit (dynamic tone color) | P pants | S shoe/outline
 const SPRITE_ROWS = [
   "..HHHHHHHH..",
   ".HHHHHHHHHH.",
@@ -402,19 +505,12 @@ const SPRITE_ROWS = [
   "..PP....PP..",
   ".SSS....SSS.",
 ];
-const PIXEL = 10; // px per grid cell in the 120x200 viewBox
+const PIXEL = 10;
 
 function drawFigure(overallTone){
   const svg = document.getElementById('figureSvg');
   const outfitColor = TONE_COLORS[overallTone] ? TONE_COLORS[overallTone].bd : "#6FB43F";
-  const PALETTE = {
-    H: "#4B3524", // hair
-    F: "#F6D3A6", // skin
-    E: "#2B2B26", // eyes
-    O: outfitColor, // outfit — reflects fit result
-    P: "#4B5B7C", // pants
-    S: "#2B2B26", // shoes/outline
-  };
+  const PALETTE = { H:"#4B3524", F:"#F6D3A6", E:"#2B2B26", O:outfitColor, P:"#4B5B7C", S:"#2B2B26" };
   let rects = '<rect x="14" y="192" width="92" height="6" fill="#000" opacity="0.10"/>';
   SPRITE_ROWS.forEach((row, r)=>{
     for(let c=0;c<row.length;c++){
@@ -430,7 +526,7 @@ function placeTags(items){
   document.querySelectorAll('.tag').forEach(t=>t.remove());
   const stage = document.getElementById('stage');
   const positions = {
-    "肩寬":{top:76,left:'22%'}, "胸圍":{top:112,left:'78%'},
+    "肩寬":{top:76,left:'22%'}, "袖長":{top:118,left:'22%'}, "胸圍":{top:112,left:'78%'},
     "衣長":{top:170,left:'80%'}, "腰圍":{top:150,left:'20%'},
     "臀圍":{top:180,left:'78%'}, "大腿圍":{top:210,left:'20%'}, "褲長":{top:230,left:'80%'}
   };
@@ -462,6 +558,23 @@ const VERDICT_TEXT = {
   lav:   {label:"oversize", text:"整體 oversize，街頭感十足"},
 };
 
+function addRow(resultsBox, items, name, bodyVal, clothVal, cls, opts={}){
+  const c = TONE_COLORS[cls.tone];
+  const row = document.createElement('div');
+  row.className='res-row';
+  let numsHtml;
+  if(opts.noDiff){
+    numsHtml = `身型參考 ${opts.bodyLabel || ''} ・ 衣服 ${clothVal}cm`;
+  } else {
+    const diff = clothVal - bodyVal;
+    numsHtml = `身型 ${bodyVal}cm ・ 衣服 ${clothVal}cm<span class="diff-line">差值 ${diff>0?'+':''}${diff.toFixed(1)}cm</span>`;
+  }
+  row.innerHTML = `<div class="res-head"><div class="res-name">${name}</div><div class="chip" style="background:${c.bg};border-color:${c.bd};color:${c.fg}">${cls.label}</div></div>
+    <div class="res-nums">${numsHtml}</div>`;
+  resultsBox.appendChild(row);
+  if(!opts.excludeFromOverall){ items.push({name, label:cls.label, tone:cls.tone}); }
+}
+
 function render(){
   const height = num('b_height',175);
   const shoulderBody = num('b_shoulder',45);
@@ -469,36 +582,49 @@ function render(){
   const waistBody = num('b_waist',80);
   const hipBody = num('b_hip',96);
   const thighBody = num('b_thigh',54);
+  const armBody = num('b_arm',58);
+  const elbowBody = num('b_elbow',33);
   const buildAdj = parseFloat(document.getElementById('c_build').value)||0;
+
+  const shortSleeveFitCenter = elbowBody*0.6;
+  const shortSleeveHintEl = document.getElementById('shortSleeveBodyHint');
+  if(shortSleeveHintEl){
+    shortSleeveHintEl.textContent = `短袖數據：以肘長 ${elbowBody}cm 估算，合身袖長 ≈ 肘長×0.6 = ${shortSleeveFitCenter.toFixed(1)}cm（落於上臂中間），寬鬆／落肩則接近或蓋住手肘（約 ${(elbowBody*0.85).toFixed(1)}~${elbowBody.toFixed(1)}cm）。`;
+  }
 
   let items = [];
   let lengthHint = "";
+  let sleeveHint = "";
   const resultsBox = document.getElementById('resultsBox');
   resultsBox.innerHTML = "";
-
-  function addRow(name, bodyVal, clothVal, cls){
-    const diff = clothVal - bodyVal;
-    const c = TONE_COLORS[cls.tone];
-    const row = document.createElement('div');
-    row.className='res-row';
-    row.innerHTML = `<div class="res-head"><div class="res-name">${name}</div><div class="chip" style="background:${c.bg};border-color:${c.bd};color:${c.fg}">${cls.label}</div></div>
-      <div class="res-nums">身型 ${bodyVal}cm ・ 衣服 ${clothVal}cm<span class="diff-line">差值 ${diff>0?'+':''}${diff.toFixed(1)}cm</span></div>`;
-    resultsBox.appendChild(row);
-    items.push({name, label:cls.label, tone:cls.tone});
-  }
 
   if(activeCat !== "褲子"){
     const clothLen = num('c_length',72);
     const clothShoulder = num('c_shoulder',47);
     const clothChest = num('c_chest',100);
+    const clothSleeve = num('c_sleeve',21);
+    const sleeveType = document.getElementById('c_sleeveType').value;
 
     const chestDiff = clothChest - chestBody;
     const chestCls = classifyByThreeStage(chestDiff, CHEST_TABLE[activeCat] || CHEST_TABLE["T恤"]);
-    addRow("胸圍", chestBody, clothChest, chestCls);
+    addRow(resultsBox, items, "胸圍", chestBody, clothChest, chestCls);
 
     const shoulderDiff = clothShoulder - shoulderBody;
     const shoulderCls = classifyShoulder(shoulderDiff);
-    addRow("肩寬", shoulderBody, clothShoulder, shoulderCls);
+    addRow(resultsBox, items, "肩寬", shoulderBody, clothShoulder, shoulderCls);
+
+    if(sleeveType === 'short'){
+      const shortDiff = clothSleeve - shortSleeveFitCenter;
+      const sleeveCls = classifyShortSleeve(shortDiff);
+      addRow(resultsBox, items, "袖長", Math.round(shortSleeveFitCenter*10)/10, clothSleeve, sleeveCls);
+      sleeveHint = `短袖參考：以肘長 ${elbowBody}cm 估算，合身袖長 ≈ 肘長×0.6 = ${shortSleeveFitCenter.toFixed(1)}cm（落於上臂中間），寬鬆／落肩則接近或蓋住手肘（約 ${(elbowBody*0.85).toFixed(1)}~${elbowBody.toFixed(1)}cm）。`;
+    } else {
+      const sleeveDiff = clothSleeve - armBody;
+      const sleeveCls = classifyLongSleeve(sleeveDiff);
+      addRow(resultsBox, items, "袖長", armBody, clothSleeve, sleeveCls);
+      const stdLen = height*0.36, roomyLen = height*0.38;
+      sleeveHint = `長袖參考：以身高估算，標準長度 ≈ 身高×0.36 = ${stdLen.toFixed(1)}cm，微寬鬆/覆蓋手背 ≈ 身高×0.38 = ${roomyLen.toFixed(1)}cm；以臂長 ${armBody}cm 為基準，合身 +1~2cm、微寬鬆 +3~5cm、oversize/蓋手 +6~10cm。`;
+    }
 
     const suggestedLen = (height*0.41 + buildAdj);
     const lenDiff = clothLen - suggestedLen;
@@ -507,7 +633,7 @@ function render(){
     else if(lenDiff <= 1.5){ lenLabel="長度剛好"; lenTone="leaf"; }
     else if(lenDiff <= 5){ lenLabel="偏長"; lenTone="sky"; }
     else { lenLabel="很長／oversize款"; lenTone="lav"; }
-    addRow("衣長", Math.round(suggestedLen*10)/10, clothLen, {label:lenLabel, tone:lenTone});
+    addRow(resultsBox, items, "衣長", Math.round(suggestedLen*10)/10, clothLen, {label:lenLabel, tone:lenTone});
     lengthHint = `建議衣長 ≈ 身高×0.41 ${buildAdj?(buildAdj>0?'+':'')+buildAdj+'cm':''} = ${suggestedLen.toFixed(1)}cm（±1cm 為最佳區間）`;
   } else {
     const pLen = num('p_length',100);
@@ -515,10 +641,11 @@ function render(){
     const pHip = num('p_hip',104);
     const pThigh = num('p_thigh',60);
     const pWaistCirc = pWaistFlat*2;
+    const pRiseRaw = document.getElementById('p_rise').value;
 
-    addRow("腰圍", waistBody, pWaistCirc, classifyPantsPart(pWaistCirc-waistBody, WAIST_TABLE));
-    addRow("臀圍", hipBody, pHip, classifyPantsPart(pHip-hipBody, HIP_TABLE));
-    addRow("大腿圍", thighBody, pThigh, classifyPantsPart(pThigh-thighBody, THIGH_TABLE));
+    addRow(resultsBox, items, "腰圍", waistBody, pWaistCirc, classifyPantsPart(pWaistCirc-waistBody, WAIST_TABLE));
+    addRow(resultsBox, items, "臀圍", hipBody, pHip, classifyPantsPart(pHip-hipBody, HIP_TABLE));
+    addRow(resultsBox, items, "大腿圍", thighBody, pThigh, classifyPantsPart(pThigh-thighBody, THIGH_TABLE));
 
     const nineLen = height*0.55;
     const floorLen = nineLen + 5;
@@ -527,11 +654,20 @@ function render(){
     else if(pLen <= nineLen+3){ lenLabel="九分褲長"; lenTone="leaf"; }
     else if(pLen <= floorLen+2){ lenLabel="接近落地"; lenTone="sky"; }
     else { lenLabel="拖地／需改褲長"; lenTone="lav"; }
-    addRow("褲長", Math.round(nineLen*10)/10, pLen, {label:lenLabel, tone:lenTone});
+    addRow(resultsBox, items, "褲長", Math.round(nineLen*10)/10, pLen, {label:lenLabel, tone:lenTone});
     lengthHint = `參考：九分褲長 ≈ 身高×0.55 = ${nineLen.toFixed(1)}cm；落地褲長 ≈ ${floorLen.toFixed(1)}cm（此公式僅供參考，實際依個人習慣為準）`;
+
+    if(pRiseRaw){
+      const riseVal = parseFloat(pRiseRaw);
+      if(!isNaN(riseVal)){
+        addRow(resultsBox, items, "檔深(腰型)", null, riseVal, classifyRise(riseVal), {noDiff:true, excludeFromOverall:true, bodyLabel:"中低腰24~27・高腰28~32"});
+      }
+    }
+    sleeveHint = "";
   }
 
   document.getElementById('lengthHint').textContent = lengthHint;
+  document.getElementById('sleeveHint').textContent = sleeveHint;
   const overallTone = overallFromList(items);
   const v = VERDICT_TEXT[overallTone];
   const badge = document.getElementById('verdictBadge');
@@ -543,12 +679,182 @@ function render(){
   placeTags(items);
 }
 
+// ---- 常用版型 (brand size presets) ----
+// Uses window.storage (personal, non-shared) so presets persist across sessions
+// inside the Claude artifact environment; falls back to in-memory only if unavailable.
+async function loadPresets(){
+  try{
+    if(window.storage){
+      const res = await window.storage.get('fitmirror-presets', false);
+      presets = res && res.value ? JSON.parse(res.value) : [];
+    }
+  }catch(e){ presets = []; }
+  renderPresetsRow();
+  renderPresetList();
+}
+async function persistPresets(){
+  try{
+    if(window.storage){
+      await window.storage.set('fitmirror-presets', JSON.stringify(presets), false);
+    }
+  }catch(e){ console.error('儲存常用版型失敗', e); }
+}
+
+function captureCurrentClothValues(cat){
+  if(cat === '褲子'){
+    return {
+      p_length: num('p_length',100), p_waist: num('p_waist',40),
+      p_hip: num('p_hip',104), p_thigh: num('p_thigh',60),
+      p_rise: document.getElementById('p_rise').value || ''
+    };
+  }
+  return {
+    c_length: num('c_length',72), c_shoulder: num('c_shoulder',47),
+    c_chest: num('c_chest',100), c_sleeve: num('c_sleeve',21),
+    c_sleeveType: document.getElementById('c_sleeveType').value,
+    c_build: document.getElementById('c_build').value
+  };
+}
+
+const FIT_NOTE_META = {
+  unknown:  {label:"尚未試穿", tone:"sun"},
+  tight:    {label:"太緊／偏小", tone:"coral"},
+  good:     {label:"合身／剛好", tone:"leaf"},
+  loose:    {label:"偏大／寬鬆", tone:"sky"},
+  returned: {label:"已退貨", tone:"lav"},
+};
+function formatSavedDate(ts){
+  if(!ts) return '';
+  const d = new Date(ts);
+  return `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}`;
+}
+function presetSummary(p){
+  if(p.category === '褲子'){
+    let s = `褲長${p.values.p_length} ・ 腰寬${p.values.p_waist} ・ 臀圍${p.values.p_hip} ・ 大腿${p.values.p_thigh}`;
+    if(p.values.p_rise) s += ` ・ 檔深${p.values.p_rise}`;
+    return s;
+  }
+  const sleeveLabel = p.values.c_sleeveType === 'short' ? '短袖' : '長袖';
+  return `衣長${p.values.c_length} ・ 肩寬${p.values.c_shoulder} ・ 胸圍${p.values.c_chest} ・ 袖長${p.values.c_sleeve}(${sleeveLabel})`;
+}
+
+function applyPreset(p){
+  activeCat = p.category;
+  categorySelect.value = p.category;
+  updateCategoryUI(p.category);
+  if(p.category === '褲子'){
+    document.getElementById('p_length').value = p.values.p_length;
+    document.getElementById('p_waist').value = p.values.p_waist;
+    document.getElementById('p_hip').value = p.values.p_hip;
+    document.getElementById('p_thigh').value = p.values.p_thigh;
+    document.getElementById('p_rise').value = p.values.p_rise || '';
+  } else {
+    document.getElementById('c_length').value = p.values.c_length;
+    document.getElementById('c_shoulder').value = p.values.c_shoulder;
+    document.getElementById('c_chest').value = p.values.c_chest;
+    document.getElementById('c_sleeve').value = p.values.c_sleeve;
+    document.getElementById('c_sleeveType').value = p.values.c_sleeveType || 'short';
+    document.getElementById('c_build').value = p.values.c_build || '0';
+  }
+  switchTab('result');
+  render();
+}
+
+function renderPresetsRow(){
+  const row = document.getElementById('presetsRow');
+  row.innerHTML = '';
+  presets.forEach(p=>{
+    const note = FIT_NOTE_META[p.fitNote] || FIT_NOTE_META.unknown;
+    const dotColor = TONE_COLORS[note.tone].bd;
+    const chip = document.createElement('div');
+    chip.className = 'preset-chip';
+    chip.innerHTML = `<span style="width:8px;height:8px;border-radius:50%;background:${dotColor};display:inline-block;"></span><span>${p.name}</span>`;
+    chip.title = note.label;
+    chip.addEventListener('click', ()=> applyPreset(p));
+    row.appendChild(chip);
+  });
+  const addChip = document.createElement('div');
+  addChip.className = 'preset-chip add';
+  addChip.textContent = '＋ 新增常用版型';
+  addChip.addEventListener('click', ()=> switchTab('presets'));
+  row.appendChild(addChip);
+}
+
+function renderPresetList(){
+  const list = document.getElementById('presetList');
+  list.innerHTML = '';
+  if(presets.length === 0){
+    list.innerHTML = '<div class="empty-state">還沒有常用版型。<br>在「衣服尺寸」分頁輸入好數值後，回來這裡命名並儲存吧！</div>';
+    return;
+  }
+  presets.forEach(p=>{
+    const note = FIT_NOTE_META[p.fitNote] || FIT_NOTE_META.unknown;
+    const c = TONE_COLORS[note.tone];
+    const card = document.createElement('div');
+    card.className = 'preset-card';
+    card.innerHTML = `
+      <div class="preset-card-top">
+        <div><div class="preset-card-name">${p.name}</div><div class="preset-card-cat">${p.category}${p.savedAt ? ' ・ 建立於 '+formatSavedDate(p.savedAt) : ''}</div></div>
+        <div class="chip" style="background:${c.bg};border-color:${c.bd};color:${c.fg}">${note.label}</div>
+      </div>
+      <div class="preset-card-vals">${presetSummary(p)}</div>
+      <div class="field" style="margin-bottom:9px;">
+        <label>更新穿著心得</label>
+        <select class="simple-select" data-act="note">
+          <option value="unknown">尚未試穿</option>
+          <option value="tight">太緊／偏小</option>
+          <option value="good">合身／剛好</option>
+          <option value="loose">偏大／寬鬆</option>
+          <option value="returned">已退貨</option>
+        </select>
+      </div>
+      <div class="preset-card-actions">
+        <div class="btn-mini primary" data-act="apply">套用並分析</div>
+        <div class="btn-mini danger" data-act="del">刪除</div>
+      </div>`;
+    card.querySelector('[data-act="note"]').value = p.fitNote || 'unknown';
+    card.querySelector('[data-act="note"]').addEventListener('change', (e)=>{
+      p.fitNote = e.target.value;
+      persistPresets();
+      renderPresetsRow();
+      renderPresetList();
+    });
+    card.querySelector('[data-act="apply"]').addEventListener('click', ()=> applyPreset(p));
+    card.querySelector('[data-act="del"]').addEventListener('click', ()=>{
+      presets = presets.filter(x=>x.id !== p.id);
+      persistPresets();
+      renderPresetsRow();
+      renderPresetList();
+    });
+    list.appendChild(card);
+  });
+}
+
+document.getElementById('savePresetBtn').addEventListener('click', ()=>{
+  const nameInput = document.getElementById('presetNameInput');
+  const noteInput = document.getElementById('presetFitNoteInput');
+  const name = nameInput.value.trim();
+  if(!name){ nameInput.focus(); return; }
+  const preset = {
+    id: Date.now(), name, category: activeCat,
+    values: captureCurrentClothValues(activeCat),
+    fitNote: noteInput.value, savedAt: Date.now()
+  };
+  presets.push(preset);
+  persistPresets();
+  nameInput.value = '';
+  noteInput.value = 'unknown';
+  renderPresetsRow();
+  renderPresetList();
+});
+
 document.querySelectorAll('input, select').forEach(el=>el.addEventListener('input', render));
 document.getElementById('analyzeBtn').addEventListener('click', ()=>{
   switchTab('result');
   render();
 });
 
+loadPresets();
 render();
 </script>
 </body>
