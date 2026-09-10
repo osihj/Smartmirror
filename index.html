@@ -262,24 +262,23 @@
 
       <div class="panel" id="panel-body">
         <div class="lock-bar" id="lockBar">
-          <div class="lock-label" id="lockLabel"><span class="status-dot" id="lockDot"></span>目前可編輯身型資料</div>
+          <div class="lock-label" id="lockLabel"><span class="status-dot" id="lockDot"></span></div>
           <button class="lock-btn" id="lockBtn" type="button">輸入完成，鎖定</button>
         </div>
         <div class="grid2" id="bodyInputsGrid">
           <div class="field"><label>身高 (cm)</label><input type="number" inputmode="decimal" id="b_height" value="175"></div>
-          <div class="field"><label>體重 (kg)<span class="opt">選填</span></label><input type="number" inputmode="decimal" id="b_weight" placeholder="選填"></div>
+          <div class="field"><label>體重 (kg)</label><input type="number" inputmode="decimal" id="b_weight" placeholder="選填"></div>
           <div class="field"><label>肩寬 (cm)</label><input type="number" inputmode="decimal" id="b_shoulder" value="45"></div>
           <div class="field"><label>胸圍 (cm)</label><input type="number" inputmode="decimal" id="b_chest" value="92"></div>
           <div class="field"><label>腰圍 (cm)</label><input type="number" inputmode="decimal" id="b_waist" value="80"></div>
           <div class="field"><label>臀圍 (cm)</label><input type="number" inputmode="decimal" id="b_hip" value="96"></div>
           <div class="field"><label>臂長 (cm)</label><input type="number" inputmode="decimal" id="b_arm" value="58"></div>
           <div class="field"><label>肘長 (cm)</label><input type="number" inputmode="decimal" id="b_elbow" value="33"></div>
-          <div class="field"><label>頸圍 (cm)<span class="opt">選填</span></label><input type="number" inputmode="decimal" id="b_neck" placeholder="選填"></div>
+          <div class="field"><label>頸圍 (cm)</label><input type="number" inputmode="decimal" id="b_neck" placeholder="選填"></div>
           <div class="field"><label>胯下長 (cm)</label><input type="number" inputmode="decimal" id="b_inseam" value="78"></div>
           <div class="field"><label>大腿圍 (cm)</label><input type="number" inputmode="decimal" id="b_thigh" value="54"></div>
-          <div class="field"><label>小腿圍 (cm)<span class="opt">選填</span></label><input type="number" inputmode="decimal" id="b_calf" placeholder="選填"></div>
+          <div class="field"><label>小腿圍 (cm)</label><input type="number" inputmode="decimal" id="b_calf" placeholder="選填"></div>
         </div>
-        <div class="hint">身材偏瘦／寬鬆會影響「建議衣長」的判斷，可依實際感受調整體型（下方衣服分頁會用到）。</div>
       </div>
 
       <div class="panel active" id="panel-cloth">
@@ -341,7 +340,7 @@
               <option value="returned">已退貨</option>
             </select>
           </div>
-          <div class="hint" style="padding:0 0 8px;">會直接儲存目前「衣服尺寸」分頁裡的數值（含目前選擇的服裝類型），並記錄建立日期，方便日後當作尺碼對照的歷史紀錄。</div>
+          <div class="hint" style="padding:0 0 8px;">新增尺寸，方便歷史回顧。</div>
           <button class="btn-solid" id="savePresetBtn" type="button">＋ 另存為常用版型</button>
         </div>
         <div id="presetList"></div>
@@ -406,7 +405,7 @@ function updateLockUI(){
   const btn = document.getElementById('lockBtn');
   grid.querySelectorAll('input').forEach(inp=> inp.disabled = bodyLocked);
   bar.classList.toggle('is-locked', bodyLocked);
-  label.innerHTML = '<span class="status-dot" id="lockDot"></span>' + (bodyLocked ? '身型資料已鎖定，避免誤觸' : '目前可編輯身型資料');
+  label.innerHTML = '<span class="status-dot" id="lockDot"></span>';
   btn.textContent = bodyLocked ? '解鎖修改' : '輸入完成，鎖定';
 }
 document.getElementById('lockBtn').addEventListener('click', ()=>{
@@ -674,20 +673,33 @@ function render(){
 // ---- 常用版型 (brand size presets) ----
 // Uses window.storage (personal, non-shared) so presets persist across sessions
 // inside the Claude artifact environment; falls back to in-memory only if unavailable.
+const PRESETS_KEY = 'fitmirror-presets';
 async function loadPresets(){
+  presets = [];
   try{
     if(window.storage){
-      const res = await window.storage.get('fitmirror-presets', false);
-      presets = res && res.value ? JSON.parse(res.value) : [];
+      const res = await window.storage.get(PRESETS_KEY, false);
+      if(res && res.value) presets = JSON.parse(res.value);
+    } else {
+      const raw = localStorage.getItem(PRESETS_KEY);
+      if(raw) presets = JSON.parse(raw);
     }
-  }catch(e){ presets = []; }
+  }catch(e){
+    // key not found or storage unavailable this round — try the other backup source
+    try{
+      const raw = localStorage.getItem(PRESETS_KEY);
+      if(raw) presets = JSON.parse(raw);
+    }catch(e2){ presets = []; }
+  }
   renderPresetsRow();
   renderPresetList();
 }
 async function persistPresets(){
+  const json = JSON.stringify(presets);
+  try{ localStorage.setItem(PRESETS_KEY, json); }catch(e){ /* ignore */ }
   try{
     if(window.storage){
-      await window.storage.set('fitmirror-presets', JSON.stringify(presets), false);
+      await window.storage.set(PRESETS_KEY, json, false);
     }
   }catch(e){ console.error('儲存常用版型失敗', e); }
 }
