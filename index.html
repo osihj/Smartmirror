@@ -272,15 +272,14 @@
           <div class="field"><label>胸圍 (cm)</label><input type="number" inputmode="decimal" id="b_chest" value="92"></div>
           <div class="field"><label>腰圍 (cm)</label><input type="number" inputmode="decimal" id="b_waist" value="80"></div>
           <div class="field"><label>臀圍 (cm)</label><input type="number" inputmode="decimal" id="b_hip" value="96"></div>
-          <div class="field"><label>臂長 (cm)<span class="opt">肩點至手腕骨</span></label><input type="number" inputmode="decimal" id="b_arm" value="58"></div>
-          <div class="field"><label>肘長 (cm)<span class="opt">肩點至手肘，估算短袖</span></label><input type="number" inputmode="decimal" id="b_elbow" value="33"></div>
+          <div class="field"><label>臂長 (cm)</label><input type="number" inputmode="decimal" id="b_arm" value="58"></div>
+          <div class="field"><label>肘長 (cm)</label><input type="number" inputmode="decimal" id="b_elbow" value="33"></div>
           <div class="field"><label>頸圍 (cm)<span class="opt">選填</span></label><input type="number" inputmode="decimal" id="b_neck" placeholder="選填"></div>
           <div class="field"><label>胯下長 (cm)</label><input type="number" inputmode="decimal" id="b_inseam" value="78"></div>
           <div class="field"><label>大腿圍 (cm)</label><input type="number" inputmode="decimal" id="b_thigh" value="54"></div>
           <div class="field"><label>小腿圍 (cm)<span class="opt">選填</span></label><input type="number" inputmode="decimal" id="b_calf" placeholder="選填"></div>
         </div>
-        <div class="hint">身材偏瘦／寬鬆會影響「建議衣長」的判斷，可依實際感受調整體型（下方衣服分頁會用到）。臂長用來換算長袖合身區間；肘長用來換算短袖合身區間。</div>
-        <div class="hint" id="shortSleeveBodyHint"></div>
+        <div class="hint">身材偏瘦／寬鬆會影響「建議衣長」的判斷，可依實際感受調整體型（下方衣服分頁會用到）。</div>
       </div>
 
       <div class="panel active" id="panel-cloth">
@@ -587,10 +586,6 @@ function render(){
   const buildAdj = parseFloat(document.getElementById('c_build').value)||0;
 
   const shortSleeveFitCenter = elbowBody*0.6;
-  const shortSleeveHintEl = document.getElementById('shortSleeveBodyHint');
-  if(shortSleeveHintEl){
-    shortSleeveHintEl.textContent = `短袖數據：以肘長 ${elbowBody}cm 估算，合身袖長 ≈ 肘長×0.6 = ${shortSleeveFitCenter.toFixed(1)}cm（落於上臂中間），寬鬆／落肩則接近或蓋住手肘（約 ${(elbowBody*0.85).toFixed(1)}~${elbowBody.toFixed(1)}cm）。`;
-  }
 
   let items = [];
   let lengthHint = "";
@@ -617,13 +612,10 @@ function render(){
       const shortDiff = clothSleeve - shortSleeveFitCenter;
       const sleeveCls = classifyShortSleeve(shortDiff);
       addRow(resultsBox, items, "袖長", Math.round(shortSleeveFitCenter*10)/10, clothSleeve, sleeveCls);
-      sleeveHint = `短袖參考：以肘長 ${elbowBody}cm 估算，合身袖長 ≈ 肘長×0.6 = ${shortSleeveFitCenter.toFixed(1)}cm（落於上臂中間），寬鬆／落肩則接近或蓋住手肘（約 ${(elbowBody*0.85).toFixed(1)}~${elbowBody.toFixed(1)}cm）。`;
     } else {
       const sleeveDiff = clothSleeve - armBody;
       const sleeveCls = classifyLongSleeve(sleeveDiff);
       addRow(resultsBox, items, "袖長", armBody, clothSleeve, sleeveCls);
-      const stdLen = height*0.36, roomyLen = height*0.38;
-      sleeveHint = `長袖參考：以身高估算，標準長度 ≈ 身高×0.36 = ${stdLen.toFixed(1)}cm，微寬鬆/覆蓋手背 ≈ 身高×0.38 = ${roomyLen.toFixed(1)}cm；以臂長 ${armBody}cm 為基準，合身 +1~2cm、微寬鬆 +3~5cm、oversize/蓋手 +6~10cm。`;
     }
 
     const suggestedLen = (height*0.41 + buildAdj);
